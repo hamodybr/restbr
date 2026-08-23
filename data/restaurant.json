@@ -10,7 +10,7 @@
     "ku": "مينيويا {name} ببينه",
     "en": "Discover {name} Menu"
   },
-  "logo": "https://xdqewaapwhmqlfotaofg.supabase.co/storage/v1/object/public/menu-images/d47a8797-caf9-4bfd-a3cf-4bd55bda8ddb/branding/logo/1787440608837-4cirjy.jpeg",
+  "logo": "assets/logo.jpeg",
   "phone": "07502662002",
   "whatsapp": "9647502662002",
   "locationUrl": "https://maps.app.goo.gl/QVumFTo1wf9zXRMN6?g_st=ic",
@@ -20,7 +20,11 @@
     "ku": "د.ع",
     "en": "IQD"
   },
-  "languages": ["ar", "ku", "en"],
+  "languages": [
+    "ar",
+    "ku",
+    "en"
+  ],
   "defaultLanguage": "ar",
   "introEnabled": true,
   "introDurationMs": 800,
@@ -32,7 +36,7 @@
   },
   "background": {
     "image": "",
-    "video": "https://hamodybr.github.io/restbr-menu-app/assets/background.mp4"
+    "video": "assets/background.mp4"
   },
   "footerLocation": {
     "ar": "دهوك • كوردستان",
