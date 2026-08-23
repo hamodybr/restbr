@@ -1,0 +1,51 @@
+/* Small customer-facing finishing layer. Kept separate so the core theme stays clean. */
+.sm-order-state-banner{
+  position:fixed;
+  z-index:86;
+  top:max(12px,env(safe-area-inset-top));
+  left:50%;
+  transform:translateX(-50%);
+  width:min(92%,420px);
+  padding:10px 13px;
+  border:1px solid rgba(216,169,88,.35);
+  border-radius:13px;
+  background:rgba(12,9,6,.94);
+  color:#e2b55e;
+  text-align:center;
+  font-size:11px;
+  line-height:1.55;
+  box-shadow:0 12px 35px rgba(0,0,0,.35);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px)
+}
+.sm-delivery-info{
+  margin:0 0 9px;
+  padding:9px 10px;
+  border:1px solid rgba(216,169,88,.18);
+  border-radius:11px;
+  background:rgba(216,169,88,.045);
+  color:#b8afa4;
+  font-size:10px;
+  line-height:1.65
+}
+.sm-menu-off{min-height:38vh;display:grid;place-items:center;padding:30px 14px}
+.sm-menu-off>div{width:min(92%,400px);padding:24px 18px;text-align:center;border:1px solid rgba(216,169,88,.25);border-radius:20px;background:rgba(10,8,6,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:#d8a958;line-height:1.8;font-size:12px;font-weight:800}
+.sm-cart-continue:disabled,.sm-send-order:disabled{cursor:not-allowed}
+
+@media(max-width:900px){
+  /* Prevent iPhone Safari auto-zoom when focusing checkout fields. */
+  #smCheckoutSheet input,
+  #smCheckoutSheet textarea,
+  #smCheckoutSheet select{
+    font-size:16px!important
+  }
+  #smCheckoutSheet,
+  #smCheckoutSheet .sm-checkout-body,
+  #smCheckoutSheet label,
+  #smCheckoutSheet input,
+  #smCheckoutSheet textarea{
+    min-width:0;
+    max-width:100%;
+    box-sizing:border-box
+  }
+}
