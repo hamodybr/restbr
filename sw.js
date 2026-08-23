@@ -1,4 +1,4 @@
-const CACHE_NAME = 'restbr-simple-shorash-v3';
+const CACHE_NAME = 'restbr-simple-shorash-v4';
 const SHELL = [
   './',
   './index.html',
@@ -36,36 +36,22 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  if (request.mode === 'navigate') {
-    event.respondWith((async () => {
-      try {
-        const response = await fetch(request);
-        if (response.ok) {
-          const cache = await caches.open(CACHE_NAME);
-          cache.put('./index.html', response.clone()).catch(() => {});
-        }
-        return response;
-      } catch (_) {
-        return (await caches.match('./index.html')) || (await caches.match('./')) || Response.error();
-      }
-    })());
-    return;
-  }
-
   event.respondWith((async () => {
-    const cached = await caches.match(request, { ignoreSearch: true });
-    const network = fetch(request).then(async response => {
-      if (response.ok) {
+    try {
+      const response = await fetch(request);
+      if (response && response.ok) {
         const cache = await caches.open(CACHE_NAME);
         cache.put(request, response.clone()).catch(() => {});
+        if (request.mode === 'navigate') cache.put('./index.html', response.clone()).catch(() => {});
       }
       return response;
-    }).catch(() => null);
-
-    if (cached) {
-      network.catch(() => {});
-      return cached;
+    } catch (_) {
+      const cached = await caches.match(request, { ignoreSearch: true });
+      if (cached) return cached;
+      if (request.mode === 'navigate') {
+        return (await caches.match('./index.html')) || (await caches.match('./')) || Response.error();
+      }
+      return Response.error();
     }
-    return (await network) || Response.error();
   })());
 });
