@@ -6,22 +6,25 @@
     "en": "Shorash Restaurant"
   },
   "subtitle": {
-    "ar": "اكتشف منيو مطعم شورش",
-    "ku": "مينيويا SHORASH ببينه",
-    "en": "Discover Shorash Restaurant Menu"
-  },
-  "footerText": {
-    "ar": "مطعم شورش",
-    "ku": "SHORASH",
-    "en": "Shorash Restaurant"
+    "ar": "اكتشف منيو {name}",
+    "ku": "مينيويا {name} ببينه",
+    "en": "Discover {name} Menu"
   },
   "logo": "https://xdqewaapwhmqlfotaofg.supabase.co/storage/v1/object/public/menu-images/d47a8797-caf9-4bfd-a3cf-4bd55bda8ddb/branding/logo/1787440608837-4cirjy.jpeg",
   "phone": "07502662002",
   "whatsapp": "9647502662002",
   "locationUrl": "https://maps.app.goo.gl/QVumFTo1wf9zXRMN6?g_st=ic",
   "currency": "IQD",
+  "currencyLabels": {
+    "ar": "د.ع",
+    "ku": "د.ع",
+    "en": "IQD"
+  },
   "languages": ["ar", "ku", "en"],
   "defaultLanguage": "ar",
+  "introEnabled": true,
+  "introDurationMs": 800,
+  "announcementEnabled": true,
   "announcement": {
     "ar": "عروض قوية اليوم 🔥",
     "ku": "اوفه رين تايبه ت 🔥",
@@ -29,16 +32,106 @@
   },
   "background": {
     "image": "",
-    "video": ""
+    "video": "https://hamodybr.github.io/restbr-menu-app/assets/background.mp4"
   },
-  "theme": {
-    "accent": "#d8a958",
-    "glass": "rgba(8,6,4,.18)",
-    "border": "rgba(216,169,88,.44)",
-    "blur": 8,
+  "footerLocation": {
+    "ar": "دهوك • كوردستان",
+    "ku": "دهۆک • کوردستان",
+    "en": "Duhok • Kurdistan"
+  },
+  "topLabels": {
+    "location": {
+      "ar": "موقعنا",
+      "ku": "جهێ مە",
+      "en": "Location"
+    },
+    "call": {
+      "ar": "اتصال",
+      "ku": "پەیوەندی",
+      "en": "Call"
+    },
+    "whatsapp": {
+      "ar": "واتساب",
+      "ku": "واتساپی",
+      "en": "WhatsApp"
+    }
+  },
+  "socials": [
+    {
+      "type": "facebook",
+      "label": "Facebook",
+      "url": "https://facebook.com/shorashrest",
+      "enabled": true
+    },
+    {
+      "type": "snapchat",
+      "label": "Snapchat",
+      "url": "https://www.snapchat.com/add/shorest2000",
+      "enabled": true
+    },
+    {
+      "type": "tiktok",
+      "label": "TikTok",
+      "url": "https://www.tiktok.com/@shorashrest",
+      "enabled": true
+    },
+    {
+      "type": "instagram",
+      "label": "Instagram",
+      "url": "https://www.instagram.com/shorashrest",
+      "enabled": true
+    }
+  ],
+  "features": {
+    "isOpen": true,
+    "ordersEnabled": true,
+    "pickupEnabled": true,
+    "deliveryEnabled": true,
+    "topLocationEnabled": true,
+    "topCallEnabled": true,
+    "topWhatsappEnabled": true,
+    "showFooter": true
+  },
+  "closedMessage": {
+    "ar": "المطعم مغلق حالياً. يسعدنا استقبال طلبك عند إعادة فتح الطلبات.",
+    "ku": "چێشتخانەکە لە ئێستادا داخراوە. کاتێک داواکاری دووبارە کراوە دەبێت، بەخێربێيت.",
+    "en": "The restaurant is currently closed. Ordering will be available again when we reopen."
+  },
+  "design": {
+    "accentColor": "#d8a958",
     "cardHeight": 160,
-    "cardRadius": 15,
-    "imagePercent": 45
+    "imagePercent": 40,
+    "cardRadius": 18,
+    "cardGap": 10,
+    "infoPadding": 10,
+    "productNameFont": 13,
+    "optionFont": 12,
+    "priceFont": 12,
+    "sectionTitleFont": 22,
+    "addButtonHeight": 30,
+    "addButtonFont": 10,
+    "categoryHeight": 41,
+    "categoryFont": 12,
+    "topActionHeight": 48,
+    "topActionFont": 11,
+    "cartWidth": 160,
+    "cartHeight": 43,
+    "cartFont": 10,
+    "cartHorizontal": 50,
+    "cartBottom": 16,
+    "logoSize": 84,
+    "menuTitleFont": 26,
+    "subtitleFont": 12,
+    "searchHeight": 46,
+    "searchFont": 16,
+    "footerTitleFont": 17,
+    "footerActionFont": 10.5,
+    "footerPhoneFont": 17,
+    "cardGlassColor": "#080604",
+    "cardGlassOpacity": 6,
+    "cardGlassBlur": 2,
+    "footerGlassOpacity": 6,
+    "footerGlassBlur": 2
   },
   "qrEnabled": true
 }
