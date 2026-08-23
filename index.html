@@ -10,8 +10,10 @@
   <meta name="apple-mobile-web-app-title" content="SHORASH">
   <title>SHORASH Menu</title>
   <link rel="icon" href="assets/app-icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/app-icon.svg">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="styles.css?v=3.0">
+  <link rel="stylesheet" href="polish.css?v=1.0">
 </head>
 <body>
   <video id="smBgVideo" class="sm-bg-video" autoplay muted loop playsinline hidden></video>
@@ -76,6 +78,7 @@
     </footer>
   </main>
 
+  <div id="smOrderStateBanner" class="sm-order-state-banner" hidden></div>
   <button id="smTopBtn" class="sm-top-btn" type="button" aria-label="Back to top">↑</button>
 
   <button id="smCartFab" class="sm-cart-fab" type="button" hidden>
@@ -128,8 +131,12 @@
         <button type="button" data-order-type="pickup">استلام</button>
         <button type="button" data-order-type="delivery">توصيل</button>
       </div>
-      <button id="smLocationBtn" class="sm-location-btn" type="button">📍 تحديد موقعي</button>
-      <div id="smLocationStatus" class="sm-location-status"></div>
+      <div id="smDeliveryFields">
+        <div id="smDeliveryInfo" class="sm-delivery-info" hidden></div>
+        <label><span id="smAddressLabel">العنوان</span><input id="smCustomerAddress" autocomplete="street-address"></label>
+        <button id="smLocationBtn" class="sm-location-btn" type="button">📍 تحديد موقعي</button>
+        <div id="smLocationStatus" class="sm-location-status"></div>
+      </div>
       <label><span id="smNotesLabel">ملاحظات</span><textarea id="smCustomerNotes" rows="3"></textarea></label>
       <div id="smCheckoutReview" class="sm-checkout-review"></div>
     </div>
@@ -140,6 +147,6 @@
   <div id="smOfflineBanner" class="sm-offline-banner" hidden></div>
 
   <script src="shorash-data.js?v=2.0"></script>
-  <script src="app.js?v=3.0"></script>
+  <script src="app.js?v=3.1"></script>
 </body>
 </html>
