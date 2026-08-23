@@ -1,0 +1,55 @@
+name: Vendor Shorash Static Assets
+
+on:
+  push:
+    branches: [shorash]
+    paths:
+      - '.github/workflows/vendor-shorash-assets.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vendor-shorash-static-assets
+  cancel-in-progress: false
+
+jobs:
+  vendor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout Shorash branch
+        uses: actions/checkout@v4
+        with:
+          ref: shorash
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Copy menu source, images, logo and background locally
+        run: node tools/vendor-shorash-assets.mjs
+
+      - name: Verify generated static files
+        run: |
+          test -s data/categories-source.json
+          test -s data/products-source.json
+          test -s data/product-options-source.json
+          test -s data/vendor-report.json
+          test -s assets/logo.jpeg
+          test -s assets/background.mp4
+          node -e "const r=require('./data/vendor-report.json'); if(r.products<160) process.exit(1); console.log(r)"
+
+      - name: Commit vendored assets
+        run: |
+          git config user.name "RESTBR Static Vendor"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/restaurant.json data/categories-source.json data/products-source.json data/product-options-source.json data/vendor-report.json assets/logo.jpeg assets/background.mp4 assets/products
+          if git diff --cached --quiet; then
+            echo "No asset changes to commit."
+            exit 0
+          fi
+          git commit -m "Vendor Shorash menu and media locally"
+          git push origin HEAD:shorash
