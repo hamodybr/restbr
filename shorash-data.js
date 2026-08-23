@@ -2,11 +2,11 @@
   'use strict';
 
   const originalFetch = window.fetch.bind(window);
-  const CACHE_KEY = 'RESTBR_SHORASH_STATIC_MENU_V2';
+  const CACHE_KEY = 'RESTBR_SHORASH_STATIC_MENU_V3';
   const source = {
-    categories: 'https://raw.githubusercontent.com/hamodybr/restbr-menu-app/main/migration/shorash/categories.json',
-    products: 'https://raw.githubusercontent.com/hamodybr/restbr-menu-app/main/migration/shorash/products.json',
-    options: 'https://raw.githubusercontent.com/hamodybr/restbr-menu-app/main/migration/shorash/product_options.json'
+    categories: ['data/categories-source.json', 'https://raw.githubusercontent.com/hamodybr/restbr-menu-app/main/migration/shorash/categories.json'],
+    products: ['data/products-source.json', 'https://raw.githubusercontent.com/hamodybr/restbr-menu-app/main/migration/shorash/products.json'],
+    options: ['data/product-options-source.json', 'https://raw.githubusercontent.com/hamodybr/restbr-menu-app/main/migration/shorash/product_options.json']
   };
 
   const asText = value => value == null ? '' : String(value);
@@ -43,10 +43,18 @@
     return from <= to ? now >= from && now <= to : now >= from || now <= to;
   }
 
-  async function json(url) {
-    const response = await originalFetch(url, { cache: 'no-store' });
-    if (!response.ok) throw new Error(`Shorash static data failed: ${response.status}`);
-    return response.json();
+  async function json(candidates) {
+    let lastError;
+    for (const url of candidates) {
+      try {
+        const response = await originalFetch(url, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`${response.status} ${url}`);
+        return await response.json();
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError || new Error('Static source unavailable');
   }
 
   function readCache() {
@@ -124,11 +132,11 @@
             visible: available,
             available,
             options: productOptions,
-            badges: {}
+            badges: product.badges || {}
           };
         });
 
-      const menu = { version: 2, generatedFrom: 'static-export', categories, products };
+      const menu = { version: 3, generatedFrom: 'static-export', categories, products };
       writeCache(menu);
       return menu;
     } catch (error) {
@@ -159,5 +167,5 @@
     });
   };
 
-  console.log('✅ RESTBR Simple Shorash static data bridge V2 ready');
+  console.log('✅ RESTBR Simple Shorash static data bridge V3 ready');
 })();
