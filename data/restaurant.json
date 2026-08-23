@@ -56,6 +56,11 @@
       "en": "WhatsApp"
     }
   },
+  "deliveryInfo": {
+    "ar": "",
+    "ku": "",
+    "en": ""
+  },
   "socials": [
     {
       "type": "facebook",
@@ -83,6 +88,7 @@
     }
   ],
   "features": {
+    "menuEnabled": true,
     "isOpen": true,
     "ordersEnabled": true,
     "pickupEnabled": true,
