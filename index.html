@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0907">
+  <title>RESTBR Menu</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="background" class="page-bg"></div>
+  <video id="backgroundVideo" class="page-video" muted loop playsinline hidden></video>
+
+  <main id="app" class="phone-canvas">
+    <header class="hero">
+      <div class="hero-tools">
+        <button id="searchToggle" class="icon-btn" type="button" aria-label="Search">⌕</button>
+        <button id="langBtn" class="icon-btn lang-btn" type="button">AR</button>
+      </div>
+      <img id="logo" class="logo" alt="">
+      <h1 id="restaurantName">RESTBR</h1>
+      <p id="subtitle"></p>
+      <div id="heroActions" class="hero-actions"></div>
+      <div id="searchBox" class="search-box" hidden>
+        <input id="searchInput" type="search" placeholder="ابحث..." autocomplete="off">
+      </div>
+    </header>
+
+    <div id="announcement" class="announcement" hidden></div>
+    <nav id="categories" class="category-strip" aria-label="Categories"></nav>
+    <section id="menu" class="menu"></section>
+    <footer id="footer" class="footer"></footer>
+  </main>
+
+  <button id="cartButton" class="cart-fab" type="button" hidden>
+    <span>🛒</span><b id="cartText">Cart</b><span id="cartCount">0</span>
+  </button>
+
+  <div id="cartBackdrop" class="backdrop" hidden></div>
+  <aside id="cartSheet" class="cart-sheet" hidden aria-modal="true">
+    <div class="sheet-head">
+      <div><h2 id="cartTitle">السلة</h2><small id="cartRestaurant"></small></div>
+      <button id="closeCart" class="icon-btn" type="button">×</button>
+    </div>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="cart-summary"><span id="totalLabel">الإجمالي</span><strong id="cartTotal"></strong></div>
+    <button id="checkoutBtn" class="checkout-btn" type="button">WhatsApp</button>
+  </aside>
+
+  <div id="toast" class="toast" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>
