@@ -1,8 +1,9 @@
-const CACHE_NAME = 'restbr-simple-shorash-v4';
+const CACHE_NAME = 'restbr-simple-shorash-v5';
 const SHELL = [
   './',
   './index.html',
   './styles.css',
+  './polish.css',
   './app.js',
   './shorash-data.js',
   './data/restaurant.json',
