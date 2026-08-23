@@ -2,6 +2,7 @@
   'use strict';
 
   const originalFetch = window.fetch.bind(window);
+  const CACHE_KEY = 'RESTBR_SHORASH_STATIC_MENU_V2';
   const source = {
     categories: 'https://raw.githubusercontent.com/hamodybr/restbr-menu-app/main/migration/shorash/categories.json',
     products: 'https://raw.githubusercontent.com/hamodybr/restbr-menu-app/main/migration/shorash/products.json',
@@ -48,66 +49,96 @@
     return response.json();
   }
 
+  function readCache() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+      if (!parsed?.menu || !Array.isArray(parsed.menu.products) || !Array.isArray(parsed.menu.categories)) return null;
+      return parsed.menu;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function writeCache(menu) {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), menu }));
+    } catch (_) {}
+  }
+
   async function buildMenu() {
-    const [categoriesRaw, productsRaw, optionsRaw] = await Promise.all([
-      json(source.categories),
-      json(source.products),
-      json(source.options)
-    ]);
+    try {
+      const [categoriesRaw, productsRaw, optionsRaw] = await Promise.all([
+        json(source.categories),
+        json(source.products),
+        json(source.options)
+      ]);
 
-    const optionsByProduct = new Map();
-    [...optionsRaw]
-      .sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0))
-      .forEach(option => {
-        if (option.is_active === false || option.is_available === false) return;
-        const list = optionsByProduct.get(option.product_id) || [];
-        list.push({
-          id: option.id,
-          name: names(option),
-          price: Number(option.price) || 0,
-          visible: true
+      const optionsByProduct = new Map();
+      [...optionsRaw]
+        .sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0))
+        .forEach(option => {
+          if (option.is_active === false || option.is_available === false) return;
+          const list = optionsByProduct.get(option.product_id) || [];
+          list.push({
+            id: option.id,
+            name: names(option),
+            price: Number(option.price) || 0,
+            visible: true
+          });
+          optionsByProduct.set(option.product_id, list);
         });
-        optionsByProduct.set(option.product_id, list);
-      });
 
-    const categories = [...categoriesRaw]
-      .sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0))
-      .map(category => ({
-        id: category.id,
-        name: names(category),
-        visible: category.is_active !== false && category.is_visible !== false && scheduleAllows(category)
-      }));
+      const categories = [...categoriesRaw]
+        .sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0))
+        .map(category => ({
+          id: category.id,
+          slug: asText(category.slug),
+          name: names(category),
+          visible: category.is_active !== false && category.is_visible !== false && scheduleAllows(category)
+        }));
 
-    const products = [...productsRaw]
-      .sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0))
-      .map(product => {
-        const productOptions = optionsByProduct.get(product.id) || [];
-        const description = {
-          ar: asText(product.description_ar),
-          ku: asText(product.description_ku),
-          en: asText(product.description_en)
-        };
-        const hasDescription = Object.values(description).some(Boolean);
-        const declaredOptions = product.has_options === true;
-        const available = product.is_active !== false &&
-          product.is_visible !== false &&
-          product.is_available !== false &&
-          scheduleAllows(product) &&
-          (!declaredOptions || productOptions.length > 0);
+      const products = [...productsRaw]
+        .sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0))
+        .map(product => {
+          const productOptions = optionsByProduct.get(product.id) || [];
+          const description = {
+            ar: asText(product.description_ar),
+            ku: asText(product.description_ku),
+            en: asText(product.description_en)
+          };
+          const hasDescription = Object.values(description).some(Boolean);
+          const declaredOptions = product.has_options === true;
+          const available = product.is_active !== false &&
+            product.is_visible !== false &&
+            product.is_available !== false &&
+            scheduleAllows(product) &&
+            (!declaredOptions || productOptions.length > 0);
 
-        return {
-          id: product.id,
-          categoryId: product.category_id,
-          name: names(product),
-          description: hasDescription ? description : null,
-          image: asText(product.image_url),
-          price: Number(product.base_price) || 0,
-          visible: available,
-          options: productOptions
-        };
-      });
+          return {
+            id: product.id,
+            categoryId: product.category_id,
+            name: names(product),
+            description: hasDescription ? description : null,
+            image: asText(product.image_url),
+            price: Number(product.base_price) || 0,
+            visible: available,
+            available,
+            options: productOptions,
+            badges: {}
+          };
+        });
 
-    return { categories, products };
+      const menu = { version: 2, generatedFrom: 'static-export', categories, products };
+      writeCache(menu);
+      return menu;
+    } catch (error) {
+      const cached = readCache();
+      if (cached) {
+        console.warn('RESTBR: using cached Shorash static menu', error);
+        return cached;
+      }
+      throw error;
+    }
   }
 
   let menuPromise = null;
@@ -117,21 +148,16 @@
       return originalFetch(input, init);
     }
 
-    try {
-      menuPromise ||= buildMenu();
-      const menu = await menuPromise;
-      return new Response(JSON.stringify(menu), {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-          'Cache-Control': 'no-store'
-        }
-      });
-    } catch (error) {
-      console.error('RESTBR Simple Shorash data bridge failed', error);
-      throw error;
-    }
+    menuPromise ||= buildMenu();
+    const menu = await menuPromise;
+    return new Response(JSON.stringify(menu), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cache-Control': 'no-store'
+      }
+    });
   };
 
-  console.log('✅ RESTBR Simple Shorash static data bridge ready');
+  console.log('✅ RESTBR Simple Shorash static data bridge V2 ready');
 })();
