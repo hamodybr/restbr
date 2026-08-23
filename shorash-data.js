@@ -2,11 +2,11 @@
   'use strict';
 
   const originalFetch = window.fetch.bind(window);
-  const CACHE_KEY = 'RESTBR_SHORASH_STATIC_MENU_V3';
+  const CACHE_KEY = 'RESTBR_SHORASH_STATIC_MENU_V4';
   const source = {
-    categories: ['data/categories-source.json', 'https://raw.githubusercontent.com/hamodybr/restbr-menu-app/main/migration/shorash/categories.json'],
-    products: ['data/products-source.json', 'https://raw.githubusercontent.com/hamodybr/restbr-menu-app/main/migration/shorash/products.json'],
-    options: ['data/product-options-source.json', 'https://raw.githubusercontent.com/hamodybr/restbr-menu-app/main/migration/shorash/product_options.json']
+    categories: 'data/categories-source.json',
+    products: 'data/products-source.json',
+    options: 'data/product-options-source.json'
   };
 
   const asText = value => value == null ? '' : String(value);
@@ -43,18 +43,10 @@
     return from <= to ? now >= from && now <= to : now >= from || now <= to;
   }
 
-  async function json(candidates) {
-    let lastError;
-    for (const url of candidates) {
-      try {
-        const response = await originalFetch(url, { cache: 'no-store' });
-        if (!response.ok) throw new Error(`${response.status} ${url}`);
-        return await response.json();
-      } catch (error) {
-        lastError = error;
-      }
-    }
-    throw lastError || new Error('Static source unavailable');
+  async function json(url) {
+    const response = await originalFetch(url, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`${response.status} ${url}`);
+    return response.json();
   }
 
   function readCache() {
@@ -136,13 +128,13 @@
           };
         });
 
-      const menu = { version: 3, generatedFrom: 'static-export', categories, products };
+      const menu = { version: 4, generatedFrom: 'local-static-export', categories, products };
       writeCache(menu);
       return menu;
     } catch (error) {
       const cached = readCache();
       if (cached) {
-        console.warn('RESTBR: using cached Shorash static menu', error);
+        console.warn('RESTBR: using cached local Shorash menu', error);
         return cached;
       }
       throw error;
@@ -167,5 +159,5 @@
     });
   };
 
-  console.log('✅ RESTBR Simple Shorash static data bridge V3 ready');
+  console.log('✅ RESTBR Simple Shorash local static data V4 ready');
 })();
