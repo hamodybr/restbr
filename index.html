@@ -3,52 +3,143 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0b0907">
-  <title>Shorash Restaurant Menu</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="theme-color" content="#080604">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SHORASH">
+  <title>SHORASH Menu</title>
+  <link rel="icon" href="assets/app-icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css?v=3.0">
 </head>
 <body>
-  <div id="background" class="page-bg"></div>
-  <video id="backgroundVideo" class="page-video" muted loop playsinline hidden></video>
+  <video id="smBgVideo" class="sm-bg-video" autoplay muted loop playsinline hidden></video>
+  <div id="smBgImage" class="sm-bg-image"></div>
+  <div class="sm-bg-overlay"></div>
 
-  <main id="app" class="phone-canvas">
-    <header class="hero">
-      <div class="hero-tools">
-        <button id="searchToggle" class="icon-btn" type="button" aria-label="Search">⌕</button>
-        <button id="langBtn" class="icon-btn lang-btn" type="button">AR</button>
+  <div id="smIntro" class="sm-intro" aria-hidden="true">
+    <div class="sm-intro-logo-wrap"><img id="smIntroLogo" class="sm-intro-logo" alt=""></div>
+    <div id="smIntroBrand" class="sm-intro-brand">SHORASH</div>
+    <div class="sm-intro-sub">MENU</div>
+  </div>
+
+  <main id="smApp" class="sm-app">
+    <header class="sm-header">
+      <div id="smHeaderTools" class="sm-header-tools">
+        <button id="smSearchToggle" class="sm-header-icon-btn" type="button" aria-label="Search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.5"></circle><path d="M14.8 14.8 20 20"></path></svg>
+        </button>
+        <button id="smLangToggle" class="sm-header-icon-btn" type="button" aria-label="Language">
+          <span class="sm-lang-glyph"><b>A</b><i>ع</i></span><span id="smLangCode" class="sm-lang-code">AR</span>
+        </button>
+        <div id="smLangs" class="sm-lang-menu"></div>
+        <div id="smSearchWrap" class="sm-search-wrap">
+          <div class="sm-search-row">
+            <span class="sm-search-icon">⌕</span>
+            <input id="smSearchInput" class="sm-search-input" type="search" autocomplete="off" enterkeyhint="search">
+            <button id="smSearchClear" class="sm-search-clear" type="button" aria-label="Close">×</button>
+          </div>
+          <div id="smSearchCount" class="sm-search-count"></div>
+        </div>
       </div>
-      <img id="logo" class="logo" alt="">
-      <h1 id="restaurantName">SHORASH</h1>
-      <p id="subtitle"></p>
-      <div id="heroActions" class="hero-actions"></div>
-      <div id="searchBox" class="search-box" hidden>
-        <input id="searchInput" type="search" placeholder="ابحث..." autocomplete="off">
-      </div>
+
+      <div class="sm-logo-wrap"><img id="smLogo" class="sm-logo" alt=""></div>
+      <h1 id="smTitle">SHORASH</h1>
+      <p id="smSubtitle"></p>
+      <div id="smActions" class="sm-actions"></div>
     </header>
 
-    <div id="announcement" class="announcement" hidden></div>
-    <nav id="categories" class="category-strip" aria-label="Categories"></nav>
-    <section id="menu" class="menu"></section>
-    <footer id="footer" class="footer"></footer>
+    <div id="smAnnouncement" class="sm-news-ticker" hidden>
+      <div id="smNewsLabel" class="sm-news-label">NEW</div>
+      <div class="sm-news-window"><div id="smNewsTrack" class="sm-news-track"></div></div>
+    </div>
+
+    <div class="sm-cats-wrap">
+      <nav id="smCats" class="sm-cats" aria-label="Categories"></nav>
+      <div id="smProgress" class="sm-progress"><span></span></div>
+    </div>
+    <div id="smCatsSentinel"></div>
+
+    <section id="smMenu" class="sm-menu"></section>
+
+    <footer id="smFooter" class="sm-footer">
+      <div class="sm-footer-card">
+        <div class="sm-footer-line"></div>
+        <h2 id="smFooterTitle"></h2>
+        <p id="smFooterLocationText" class="sm-footer-location"></p>
+        <div id="smFooterActions" class="sm-footer-main-actions"></div>
+        <div id="smFooterSocials" class="sm-footer-socials"></div>
+        <div id="smFooterPhone" class="sm-footer-phone"></div>
+        <div id="smFooterCopy" class="sm-footer-copy"></div>
+      </div>
+    </footer>
   </main>
 
-  <button id="cartButton" class="cart-fab" type="button" hidden>
-    <span>🛒</span><b id="cartText">Cart</b><span id="cartCount">0</span>
+  <button id="smTopBtn" class="sm-top-btn" type="button" aria-label="Back to top">↑</button>
+
+  <button id="smCartFab" class="sm-cart-fab" type="button" hidden>
+    <span class="sm-cart-icon">🛒</span><b id="smCartFabText">السلة</b><span id="smCartCount" class="sm-cart-count">0</span>
   </button>
 
-  <div id="cartBackdrop" class="backdrop" hidden></div>
-  <aside id="cartSheet" class="cart-sheet" hidden aria-modal="true">
-    <div class="sheet-head">
-      <div><h2 id="cartTitle">السلة</h2><small id="cartRestaurant"></small></div>
-      <button id="closeCart" class="icon-btn" type="button">×</button>
+  <div id="smCartBackdrop" class="sm-cart-backdrop"></div>
+  <aside id="smCartDrawer" class="sm-cart-drawer" aria-modal="true" aria-hidden="true">
+    <div class="sm-cart-handle"></div>
+    <div class="sm-cart-head">
+      <button id="smCartClear" class="sm-cart-clear" type="button">مسح</button>
+      <h3 id="smCartTitle">السلة</h3>
+      <button id="smCartClose" class="sm-cart-close" type="button">×</button>
     </div>
-    <div id="cartItems" class="cart-items"></div>
-    <div class="cart-summary"><span id="totalLabel">الإجمالي</span><strong id="cartTotal"></strong></div>
-    <button id="checkoutBtn" class="checkout-btn" type="button">WhatsApp</button>
+    <div id="smCartItems" class="sm-cart-items"></div>
+    <div class="sm-cart-bottom">
+      <div class="sm-cart-total-row"><span id="smCartTotalLabel">الإجمالي</span><b id="smCartTotal">0</b></div>
+      <button id="smCartContinue" class="sm-cart-continue" type="button">متابعة الطلب</button>
+    </div>
   </aside>
 
-  <div id="toast" class="toast" hidden></div>
-  <script src="shorash-data.js"></script>
-  <script src="app.js"></script>
+  <div id="smChoiceBackdrop" class="sm-choice-backdrop"></div>
+  <aside id="smChoiceSheet" class="sm-choice-sheet" aria-modal="true" aria-hidden="true">
+    <div class="sm-choice-handle"></div>
+    <div class="sm-choice-head">
+      <div><small id="smChoiceHint">اختر الحجم أو الخيار</small><h3 id="smChoiceTitle"></h3></div>
+      <button id="smChoiceClose" type="button">×</button>
+    </div>
+    <div id="smChoiceList" class="sm-choice-list"></div>
+  </aside>
+
+  <div id="smImageViewer" class="sm-image-viewer" aria-hidden="true">
+    <button id="smImageClose" type="button">×</button>
+    <img id="smImageFull" alt="">
+    <div id="smImageCaption"></div>
+  </div>
+
+  <div id="smCheckoutBackdrop" class="sm-checkout-backdrop"></div>
+  <aside id="smCheckoutSheet" class="sm-checkout-sheet" aria-modal="true" aria-hidden="true">
+    <div class="sm-checkout-handle"></div>
+    <div class="sm-checkout-head">
+      <h3 id="smCheckoutTitle">إكمال الطلب</h3>
+      <button id="smCheckoutClose" type="button">×</button>
+    </div>
+    <div class="sm-checkout-body">
+      <label><span id="smNameLabel">الاسم</span><input id="smCustomerName" autocomplete="name"></label>
+      <label><span id="smPhoneLabel">رقم الهاتف</span><input id="smCustomerPhone" type="tel" inputmode="tel" autocomplete="tel"></label>
+      <div id="smOrderTypeLabel" class="sm-checkout-label">نوع الطلب</div>
+      <div id="smOrderTypes" class="sm-order-types">
+        <button type="button" data-order-type="pickup">استلام</button>
+        <button type="button" data-order-type="delivery">توصيل</button>
+      </div>
+      <button id="smLocationBtn" class="sm-location-btn" type="button">📍 تحديد موقعي</button>
+      <div id="smLocationStatus" class="sm-location-status"></div>
+      <label><span id="smNotesLabel">ملاحظات</span><textarea id="smCustomerNotes" rows="3"></textarea></label>
+      <div id="smCheckoutReview" class="sm-checkout-review"></div>
+    </div>
+    <div class="sm-checkout-actions"><button id="smSendOrder" type="button">إرسال الطلب على واتساب</button></div>
+  </aside>
+
+  <div id="smToast" class="sm-cart-toast"></div>
+  <div id="smOfflineBanner" class="sm-offline-banner" hidden></div>
+
+  <script src="shorash-data.js?v=2.0"></script>
+  <script src="app.js?v=3.0"></script>
 </body>
 </html>
