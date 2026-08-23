@@ -25,41 +25,41 @@
 
   const I18N = {
     ar: {
-      search: 'ابحث عن صنف...', results: n => `${n} نتيجة`, noResults: 'ما لقينا صنف مطابق',
-      location: 'موقعنا', call: 'اتصال', whatsapp: 'واتساب', cart: 'السلة', clear: 'مسح',
-      emptyCart: 'السلة فارغة', total: 'الإجمالي', continue: 'متابعة الطلب', choose: 'اختر', add: 'إضافة',
-      chooseHint: 'اختر الحجم أو الخيار', checkout: 'إكمال الطلب', name: 'الاسم', phone: 'رقم الهاتف',
-      orderType: 'نوع الطلب', pickup: 'استلام', delivery: 'توصيل', locate: '📍 تحديد موقعي', locating: 'جاري تحديد الموقع...',
-      locationDone: 'تم تحديد الموقع ✓', locationFail: 'تعذر تحديد الموقع — يمكنك متابعة الطلب', notes: 'ملاحظات',
-      review: 'مراجعة الطلب', send: 'إرسال الطلب على واتساب', added: 'تمت الإضافة للسلة', copied: 'تم نسخ الرابط',
-      share: 'مشاركة', newLabel: 'جديد', popular: 'الأكثر طلباً', fresh: 'جديد', hot: 'حار 🌶', offer: 'عرض',
-      unavailable: 'غير متوفر حالياً', offline: 'وضع أوفلاين — نعرض آخر نسخة محفوظة', online: 'عاد الاتصال بالإنترنت',
-      confirmClear: 'مسح جميع محتويات السلة؟', closed: 'المطعم مغلق حالياً', ordersOff: 'الطلبات متوقفة حالياً',
-      customer: 'الزبون', order: 'طلب جديد', orderNo: 'رقم الطلب', qty: 'العدد', customerLocation: 'موقع الزبون',
-      more: n => `+ ${n} خيارات أخرى`, remove: 'حذف', qr: 'QR Code', footerCopy: 'جميع الحقوق محفوظة',
-      langNames: { ar: 'العربية', ku: 'کوردی', en: 'English' }
+      search: 'ابحث عن صنف...', results: n => `${n} نتيجة`, noResults: 'ما لقينا صنف مطابق', menuOff: 'المنيو متوقف مؤقتاً.',
+      location: 'موقعنا', call: 'اتصال', whatsapp: 'واتساب', cart: 'السلة', clear: 'مسح', emptyCart: 'السلة فارغة',
+      total: 'الإجمالي', continue: 'متابعة الطلب', choose: 'اختر', add: 'إضافة', chooseHint: 'اختر الحجم أو الخيار',
+      checkout: 'إكمال الطلب', name: 'الاسم', phone: 'رقم الهاتف', orderType: 'نوع الطلب', pickup: 'استلام من المطعم', delivery: 'توصيل',
+      address: 'العنوان', locate: '📍 تحديد موقعي', locating: 'جاري تحديد الموقع...', locationDone: 'تم تحديد الموقع ✓',
+      locationFail: 'تعذر تحديد الموقع — يمكنك كتابة العنوان', notes: 'ملاحظات الطلب (اختياري)', review: 'مراجعة الطلب',
+      send: 'إرسال الطلب عبر WhatsApp', required: 'يرجى إكمال الاسم ورقم الهاتف', deliveryRequired: 'للتوصيل، اكتب العنوان أو حدد موقعك',
+      added: 'تمت الإضافة للسلة', copied: 'تم نسخ الرابط', share: 'مشاركة', newLabel: 'جديد', popular: 'الأكثر طلباً',
+      fresh: 'جديد', hot: 'حار 🌶', offer: 'عرض', unavailable: 'غير متوفر حالياً', offline: 'وضع أوفلاين — نعرض آخر نسخة محفوظة',
+      online: 'عاد الاتصال بالإنترنت', confirmClear: 'مسح جميع محتويات السلة؟', closed: 'المطعم مغلق حالياً', ordersOff: 'الطلبات متوقفة حالياً',
+      customer: 'الزبون', order: 'طلب جديد', orderNo: 'رقم الطلب', qty: 'العدد', customerLocation: 'موقع الزبون', more: n => `+ ${n} خيارات أخرى`,
+      remove: 'حذف', qr: 'QR Code', footerCopy: 'جميع الحقوق محفوظة', langNames: { ar: 'العربية', ku: 'کوردی', en: 'English' }
     },
     ku: {
-      search: 'لێگەڕان بۆ بەرهەم...', results: n => `${n} ئەنجام`, noResults: 'هیچ بەرهەمێک نەدۆزرایەوە',
-      location: 'جهێ مە', call: 'پەیوەندی', whatsapp: 'واتساپی', cart: 'سەبەتە', clear: 'پاککردنەوە',
-      emptyCart: 'سەبەتە بەتاڵە', total: 'کۆی گشتی', continue: 'بەردەوامبە', choose: 'هەڵبژێرە', add: 'زیاد بکە',
-      chooseHint: 'قەبارە یان هەڵبژاردە هەڵبژێرە', checkout: 'تەواوکردنی داواکاری', name: 'ناڤ', phone: 'ژمارا تەلەفونێ',
-      orderType: 'جۆری داواکاری', pickup: 'وەرگرتن', delivery: 'گەیاندن', locate: '📍 جهێ من دیاری بکە', locating: 'جهـ دیار دەکرێت...',
-      locationDone: 'جهـ دیارکرا ✓', locationFail: 'نەتوانرا جهـ دیاری بکرێت', notes: 'تێبینی', review: 'پێداچوونەوەی داواکاری',
-      send: 'ناردنی داواکاری بە واتساپ', added: 'زیادکرا بۆ سەبەتە', copied: 'لینک کۆپی کرا', share: 'هاوبەشکردن',
-      newLabel: 'نوێ', popular: 'زۆرترین داواکراو', fresh: 'نوێ', hot: 'توند 🌶', offer: 'ئۆفەر', unavailable: 'بەردەست نییە',
-      offline: 'دۆخی ئۆفلاین — دوایین مینیو نیشان دەدرێت', online: 'ئینتەرنێت گەڕایەوە', confirmClear: 'هەموو سەبەتە پاک بکرێتەوە؟',
-      closed: 'چێشتخانەکە داخراوە', ordersOff: 'داواکاری لە ئێستادا وەستاوە', customer: 'کڕیار', order: 'داواکاری نوێ',
-      orderNo: 'ژمارەی داواکاری', qty: 'ژمارە', customerLocation: 'جهێ کڕیار', more: n => `+ ${n} هەڵبژاردەی تر`, remove: 'ژێبرن',
-      qr: 'QR Code', footerCopy: 'هەموو مافەکان پارێزراون', langNames: { ar: 'العربية', ku: 'کوردی', en: 'English' }
+      search: 'لێگەڕان بۆ بەرهەم...', results: n => `${n} ئەنجام`, noResults: 'هیچ بەرهەمێک نەدۆزرایەوە', menuOff: 'مێنیو لە ئێستادا بەردەست نییە.',
+      location: 'جهێ مە', call: 'پەیوەندی', whatsapp: 'واتساپی', cart: 'سەبەتە', clear: 'پاککردنەوە', emptyCart: 'سەبەتە بەتاڵە',
+      total: 'کۆی گشتی', continue: 'بەردەوامبە', choose: 'هەڵبژێرە', add: 'زیاد بکە', chooseHint: 'قەبارە یان هەڵبژاردە هەڵبژێرە',
+      checkout: 'تەواوکردنی داواکاری', name: 'ناڤ', phone: 'ژمارا تەلەفونێ', orderType: 'جۆری داواکاری', pickup: 'وەرگرتن لە چێشتخانە', delivery: 'گەیاندن',
+      address: 'ناونیشان', locate: '📍 جهێ من دیاری بکە', locating: 'جهـ دیار دەکرێت...', locationDone: 'جهـ دیارکرا ✓',
+      locationFail: 'نەتوانرا جهـ دیاری بکرێت — ناونیشان بنڤیسە', notes: 'تێبینی (ئارەزوومەندانە)', review: 'پێداچوونەوەی داواکاری',
+      send: 'ناردنی داواکاری بە WhatsApp', required: 'تکایە ناڤ و ژمارا تەلەفونێ پڕ بکە', deliveryRequired: 'بۆ گەیاندن ناونیشان بنڤیسە یان جهێ خۆت دیاری بکە',
+      added: 'زیادکرا بۆ سەبەتە', copied: 'لینک کۆپی کرا', share: 'هاوبەشکردن', newLabel: 'نوێ', popular: 'زۆرترین داواکراو',
+      fresh: 'نوێ', hot: 'توند 🌶', offer: 'ئۆفەر', unavailable: 'بەردەست نییە', offline: 'دۆخی ئۆفلاین — دوایین مینیو نیشان دەدرێت',
+      online: 'ئینتەرنێت گەڕایەوە', confirmClear: 'هەموو سەبەتە پاک بکرێتەوە؟', closed: 'چێشتخانەکە داخراوە', ordersOff: 'داواکاری لە ئێستادا وەستاوە',
+      customer: 'کڕیار', order: 'داواکاری نوێ', orderNo: 'ژمارەی داواکاری', qty: 'ژمارە', customerLocation: 'جهێ کڕیار', more: n => `+ ${n} هەڵبژاردەی تر`,
+      remove: 'ژێبرن', qr: 'QR Code', footerCopy: 'هەموو مافەکان پارێزراون', langNames: { ar: 'العربية', ku: 'کوردی', en: 'English' }
     },
     en: {
-      search: 'Search menu...', results: n => `${n} result${n === 1 ? '' : 's'}`, noResults: 'No matching items',
+      search: 'Search menu...', results: n => `${n} result${n === 1 ? '' : 's'}`, noResults: 'No matching items', menuOff: 'The menu is temporarily unavailable.',
       location: 'Location', call: 'Call', whatsapp: 'WhatsApp', cart: 'Cart', clear: 'Clear', emptyCart: 'Your cart is empty',
-      total: 'Total', continue: 'Continue order', choose: 'Choose', add: 'Add', chooseHint: 'Choose a size or option',
-      checkout: 'Complete order', name: 'Name', phone: 'Phone number', orderType: 'Order type', pickup: 'Pickup', delivery: 'Delivery',
-      locate: '📍 Use my location', locating: 'Locating...', locationDone: 'Location added ✓', locationFail: 'Could not get location — you can continue',
-      notes: 'Notes', review: 'Order review', send: 'Send order on WhatsApp', added: 'Added to cart', copied: 'Link copied', share: 'Share',
+      total: 'Total', continue: 'Continue order', choose: 'Choose', add: 'Add', chooseHint: 'Choose a size or option', checkout: 'Checkout',
+      name: 'Name', phone: 'Phone number', orderType: 'Order type', pickup: 'Pickup', delivery: 'Delivery', address: 'Address',
+      locate: '📍 Use my location', locating: 'Locating...', locationDone: 'Location captured ✓', locationFail: 'Could not get location — enter your address',
+      notes: 'Order notes (optional)', review: 'Review order', send: 'Send order via WhatsApp', required: 'Please enter your name and phone number',
+      deliveryRequired: 'For delivery, enter an address or use your location', added: 'Added to cart', copied: 'Link copied', share: 'Share',
       newLabel: 'NEW', popular: 'Most Popular', fresh: 'New', hot: 'Spicy 🌶', offer: 'Offer', unavailable: 'Currently unavailable',
       offline: 'Offline mode — showing last saved menu', online: 'Back online', confirmClear: 'Clear the entire cart?', closed: 'Restaurant is currently closed',
       ordersOff: 'Ordering is currently paused', customer: 'Customer', order: 'New order', orderNo: 'Order', qty: 'Qty', customerLocation: 'Customer location',
@@ -87,7 +87,7 @@
   const text = value => typeof value === 'string' ? value : (value?.[state.lang] || value?.ar || value?.en || value?.ku || '');
   const cleanPhone = value => String(value || '').replace(/\D/g, '');
   const cartKey = () => `restbr-simple-cart-v3:${state.config?.slug || 'menu'}`;
-  const customerKey = () => `restbr-simple-customer-v1:${state.config?.slug || 'menu'}`;
+  const customerKey = () => `restbr-simple-customer-v2:${state.config?.slug || 'menu'}`;
   const menuCacheKey = () => `restbr-simple-menu-cache-v2:${state.config?.slug || 'menu'}`;
   const langKey = () => `restbr-simple-lang:${state.config?.slug || 'menu'}`;
 
@@ -96,6 +96,14 @@
       .replace(/[\u064B-\u065F\u0670]/g, '')
       .replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي')
       .replace(/\s+/g, ' ').trim();
+  }
+
+  function normalizeWhatsApp(value) {
+    let digits = cleanPhone(value);
+    if (digits.startsWith('00')) digits = digits.slice(2);
+    if (/^07\d{9}$/.test(digits)) digits = `964${digits.slice(1)}`;
+    if (/^7\d{9}$/.test(digits)) digits = `964${digits}`;
+    return digits;
   }
 
   function money(value) {
@@ -142,9 +150,17 @@
     return normalize(parts.filter(Boolean).join(' ')).includes(q);
   }
 
-  function menuFeature(name, fallback = true) {
+  function feature(name, fallback = true) {
     const features = state.config?.features || {};
     return features[name] === undefined ? fallback : features[name] !== false;
+  }
+
+  function orderingAllowed() {
+    return feature('isOpen', true) && feature('ordersEnabled', true) && (feature('pickupEnabled', true) || feature('deliveryEnabled', true));
+  }
+
+  function closedMessage() {
+    return text(state.config?.closedMessage) || (feature('isOpen', true) ? L('ordersOff') : L('closed'));
   }
 
   function applyTheme() {
@@ -220,14 +236,15 @@
     $('smLangs').innerHTML = langs.map(code => `<button type="button" data-lang="${esc(code)}" class="${code === state.lang ? 'active' : ''}">${esc(I18N[state.lang]?.langNames?.[code] || code.toUpperCase())}</button>`).join('');
 
     const actions = [];
-    if (menuFeature('topLocationEnabled', true) && c.locationUrl) actions.push({ type: 'location', href: c.locationUrl, label: c.topLabels?.location?.[state.lang] || L('location'), external: true });
-    if (menuFeature('topCallEnabled', true) && c.phone) actions.push({ type: 'call', href: `tel:${c.phone}`, label: c.topLabels?.call?.[state.lang] || L('call') });
-    if (menuFeature('topWhatsappEnabled', true) && c.whatsapp) actions.push({ type: 'whatsapp', href: `https://wa.me/${cleanPhone(c.whatsapp)}`, label: c.topLabels?.whatsapp?.[state.lang] || L('whatsapp'), external: true });
+    if (feature('topLocationEnabled', true) && c.locationUrl) actions.push({ type: 'location', href: c.locationUrl, label: c.topLabels?.location?.[state.lang] || L('location'), external: true });
+    if (feature('topCallEnabled', true) && c.phone) actions.push({ type: 'call', href: `tel:${c.phone}`, label: c.topLabels?.call?.[state.lang] || L('call') });
+    if (feature('topWhatsappEnabled', true) && c.whatsapp) actions.push({ type: 'whatsapp', href: `https://wa.me/${normalizeWhatsApp(c.whatsapp)}`, label: c.topLabels?.whatsapp?.[state.lang] || L('whatsapp'), external: true });
     for (const action of c.customTopActions || []) {
       if (action.enabled === false || !action.url) continue;
       actions.push({ type: 'custom', href: action.url, label: text(action.label), external: /^https?:/i.test(action.url), icon: action.icon || '•' });
     }
     $('smActions').innerHTML = actions.map(action => `<a class="sm-action" href="${esc(action.href)}"${action.external ? ' target="_blank" rel="noopener"' : ''}>${actionSvg(action.type, action.icon)}<b>${esc(action.label)}</b></a>`).join('');
+    syncOrderState();
   }
 
   function actionSvg(type, customIcon) {
@@ -235,6 +252,23 @@
     if (type === 'call') return '<svg viewBox="0 0 24 24"><path d="M5 4h3l2 5-2 1.7c1.2 2.4 2.9 4.1 5.3 5.3L15 14l5 2v3c0 1.1-.9 2-2 2C10.3 21 3 13.7 3 6c0-1.1.9-2 2-2Z"></path></svg>';
     if (type === 'whatsapp') return '<svg viewBox="0 0 24 24"><path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4A8 8 0 1 1 20 11.5Z"></path><path d="M9 8.5c.7 2.7 2.2 4.2 5 5"></path></svg>';
     return `<span aria-hidden="true">${esc(customIcon || '•')}</span>`;
+  }
+
+  function syncOrderState() {
+    const banner = $('smOrderStateBanner');
+    if (!banner) return;
+    const allowed = orderingAllowed();
+    banner.hidden = allowed;
+    banner.textContent = allowed ? '' : `⏸ ${closedMessage()}`;
+    $$('.sm-direct-add,.sm-choose-options').forEach(btn => {
+      btn.disabled = !allowed;
+      btn.style.opacity = allowed ? '' : '.5';
+      btn.title = allowed ? '' : closedMessage();
+    });
+    if ($('smCartContinue')) {
+      $('smCartContinue').disabled = !allowed || !state.cart.length;
+      $('smCartContinue').style.opacity = (!allowed || !state.cart.length) ? '.5' : '';
+    }
   }
 
   function renderAnnouncement() {
@@ -257,6 +291,17 @@
   }
 
   function renderMenu() {
+    if (!feature('menuEnabled', true)) {
+      $('smCats').innerHTML = '';
+      $('smCats').parentElement.hidden = true;
+      $('smActions').hidden = true;
+      $('smMenu').innerHTML = `<section class="sm-menu-off"><div>⏸<br>${esc(L('menuOff'))}</div></section>`;
+      $('smSearchCount').textContent = '';
+      return;
+    }
+    $('smCats').parentElement.hidden = false;
+    $('smActions').hidden = false;
+
     const cats = visibleCategories();
     const query = state.query.trim();
     let html = '';
@@ -267,9 +312,10 @@
       total += list.length;
       html += `<section class="sm-section" id="cat-${esc(cat.id)}" data-section-cat="${esc(cat.id)}"><div class="sm-section-head"><h2 class="sm-section-title">${esc(text(cat.name))}</h2><button class="sm-share-category" type="button" data-share-category="${esc(cat.id)}" aria-label="${esc(L('share'))}">↗</button></div><div class="sm-grid">${list.map(p => productCard(p, cat)).join('')}</div></section>`;
     }
-    $('smMenu').innerHTML = html || `<div class="sm-empty-menu"><b>⌕</b>${esc(query ? L('noResults') : L('noResults'))}</div>`;
+    $('smMenu').innerHTML = html || `<div class="sm-empty-menu"><b>⌕</b>${esc(L('noResults'))}</div>`;
     $('smSearchCount').textContent = query ? L('results')(total) : '';
     installRevealObserver();
+    syncOrderState();
   }
 
   function productCard(p, cat) {
@@ -321,7 +367,11 @@
     const actions = [];
     if (c.locationUrl) actions.push({ label: L('location'), href: c.locationUrl, external: true });
     if (c.phone) actions.push({ label: L('call'), href: `tel:${c.phone}` });
-    if (c.whatsapp) actions.push({ label: L('whatsapp'), href: `https://wa.me/${cleanPhone(c.whatsapp)}`, external: true });
+    if (c.whatsapp) actions.push({ label: L('whatsapp'), href: `https://wa.me/${normalizeWhatsApp(c.whatsapp)}`, external: true });
+    for (const action of c.customFooterActions || []) {
+      if (action.enabled === false || !action.url) continue;
+      actions.push({ label: text(action.label), href: action.url, external: /^https?:/i.test(action.url) });
+    }
     $('smFooterActions').innerHTML = actions.map(a => `<a href="${esc(a.href)}"${a.external ? ' target="_blank" rel="noopener"' : ''}>${esc(a.label)}</a>`).join('');
 
     const socials = (c.socials || []).filter(s => s.enabled !== false && s.url);
@@ -330,7 +380,7 @@
     $('smFooterPhone').textContent = c.phone || '';
     const year = new Date().getFullYear();
     $('smFooterCopy').innerHTML = `${year} © ${esc(restaurantName())} • ${esc(L('footerCopy'))}${c.qrEnabled !== false ? ` • <a href="qr.html" style="color:#aa8d60;text-decoration:none">${esc(L('qr'))}</a>` : ''}`;
-    $('smFooter').hidden = menuFeature('showFooter', true) === false;
+    $('smFooter').hidden = !feature('showFooter', true);
   }
 
   function renderAll() {
@@ -394,18 +444,19 @@
 
   function updateScrollSpy() {
     const sections = $$('.sm-section');
-    if (!sections.length) return;
-    const marker = 110;
-    let current = sections[0];
-    for (const section of sections) {
-      if (section.getBoundingClientRect().top <= marker) current = section;
-      else break;
-    }
-    const id = current?.dataset.sectionCat;
-    if (id && String(id) !== String(state.activeCategory)) {
-      state.activeCategory = id;
-      $$('.sm-cat').forEach(btn => btn.classList.toggle('active', String(btn.dataset.cat) === String(id)));
-      $('smCats')?.querySelector(`[data-cat="${cssEscape(id)}"]`)?.scrollIntoView({ block: 'nearest', inline: 'center' });
+    if (sections.length) {
+      const marker = 110;
+      let current = sections[0];
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= marker) current = section;
+        else break;
+      }
+      const id = current?.dataset.sectionCat;
+      if (id && String(id) !== String(state.activeCategory)) {
+        state.activeCategory = id;
+        $$('.sm-cat').forEach(btn => btn.classList.toggle('active', String(btn.dataset.cat) === String(id)));
+        $('smCats')?.querySelector(`[data-cat="${cssEscape(id)}"]`)?.scrollIntoView({ block: 'nearest', inline: 'center' });
+      }
     }
     const doc = document.documentElement;
     const max = doc.scrollHeight - window.innerHeight;
@@ -516,7 +567,7 @@
   }
 
   function addItem(product, option = null) {
-    if (!canOrder()) return;
+    if (!product || !canOrder()) return;
     const key = `${product.id}:${option?.id || 'base'}`;
     const found = state.cart.find(item => item.key === key);
     if (found) found.qty += 1;
@@ -535,12 +586,8 @@
   }
 
   function canOrder(showMessage = true) {
-    if (!menuFeature('isOpen', true)) {
-      if (showMessage) toast(text(state.config?.closedMessage) || L('closed'));
-      return false;
-    }
-    if (!menuFeature('ordersEnabled', true)) {
-      if (showMessage) toast(L('ordersOff'));
+    if (!orderingAllowed()) {
+      if (showMessage) toast(closedMessage());
       return false;
     }
     return true;
@@ -564,9 +611,11 @@
     $('smCartTotal').textContent = money(cartTotal());
     if (!state.cart.length) {
       $('smCartItems').innerHTML = `<div class="sm-cart-empty"><div>🛒</div>${esc(L('emptyCart'))}</div>`;
+      syncOrderState();
       return;
     }
     $('smCartItems').innerHTML = state.cart.map((item, index) => `<div class="sm-cart-item" data-cart-index="${index}">${item.image ? `<img src="${esc(item.image)}" alt="">` : '<div class="sm-cart-thumb"></div>'}<div class="sm-cart-item-info"><strong>${esc(text(item.name))}</strong><small>${item.optionName ? esc(text(item.optionName)) : ''}</small><b>${esc(money(item.price))}</b></div><div class="sm-cart-qty"><button type="button" data-minus="${index}">−</button><span>${item.qty}</span><button type="button" data-plus="${index}">＋</button></div><button class="sm-cart-remove" type="button" data-remove="${index}" aria-label="${esc(L('remove'))}">×</button></div>`).join('');
+    syncOrderState();
   }
 
   function openCart() {
@@ -585,7 +634,7 @@
 
   function openChoice(id) {
     const p = productById(id);
-    if (!p) return;
+    if (!p || !canOrder()) return;
     const options = (p.options || []).filter(o => o.visible !== false);
     if (!options.length) return addItem(p);
     state.choiceProductId = p.id;
@@ -611,8 +660,9 @@
       const data = JSON.parse(localStorage.getItem(customerKey()) || '{}');
       $('smCustomerName').value = data.name || '';
       $('smCustomerPhone').value = data.phone || '';
+      $('smCustomerAddress').value = data.address || '';
       $('smCustomerNotes').value = '';
-      state.orderType = data.orderType || (menuFeature('pickupEnabled', true) ? 'pickup' : 'delivery');
+      state.orderType = data.orderType || (feature('pickupEnabled', true) ? 'pickup' : 'delivery');
     } catch (_) {}
   }
 
@@ -620,6 +670,7 @@
     localStorage.setItem(customerKey(), JSON.stringify({
       name: $('smCustomerName').value.trim(),
       phone: $('smCustomerPhone').value.trim(),
+      address: $('smCustomerAddress').value.trim(),
       orderType: state.orderType
     }));
   }
@@ -628,8 +679,10 @@
     if (!state.cart.length || !canOrder()) return;
     closeCart();
     loadCustomer();
-    const pickup = menuFeature('pickupEnabled', true);
-    const delivery = menuFeature('deliveryEnabled', true);
+    state.customerLocation = '';
+    $('smLocationStatus').textContent = '';
+    const pickup = feature('pickupEnabled', true);
+    const delivery = feature('deliveryEnabled', true);
     if (!pickup && delivery) state.orderType = 'delivery';
     if (pickup && !delivery) state.orderType = 'pickup';
     updateOrderTypes();
@@ -651,16 +704,20 @@
     $('smCheckoutTitle').textContent = L('checkout');
     $('smNameLabel').textContent = L('name');
     $('smPhoneLabel').textContent = L('phone');
+    $('smAddressLabel').textContent = L('address');
     $('smOrderTypeLabel').textContent = L('orderType');
     $('smNotesLabel').textContent = L('notes');
     $('smLocationBtn').textContent = L('locate');
     $('smSendOrder').textContent = L('send');
+    const info = text(state.config?.deliveryInfo);
+    $('smDeliveryInfo').textContent = info;
+    $('smDeliveryInfo').hidden = !info;
     updateOrderTypes();
   }
 
   function updateOrderTypes() {
-    const pickup = menuFeature('pickupEnabled', true);
-    const delivery = menuFeature('deliveryEnabled', true);
+    const pickup = feature('pickupEnabled', true);
+    const delivery = feature('deliveryEnabled', true);
     const buttons = $$('#smOrderTypes [data-order-type]');
     buttons.forEach(btn => {
       const type = btn.dataset.orderType;
@@ -668,8 +725,7 @@
       btn.textContent = type === 'pickup' ? L('pickup') : L('delivery');
       btn.classList.toggle('active', type === state.orderType);
     });
-    $('smLocationBtn').hidden = state.orderType !== 'delivery';
-    $('smLocationStatus').hidden = state.orderType !== 'delivery';
+    $('smDeliveryFields').hidden = state.orderType !== 'delivery';
   }
 
   function renderCheckoutReview() {
@@ -705,21 +761,33 @@
 
   function sendOrder() {
     if (!state.cart.length || !canOrder()) return;
-    const whatsapp = cleanPhone(state.config?.whatsapp);
+    const whatsapp = normalizeWhatsApp(state.config?.whatsapp);
     if (!whatsapp) return toast('WhatsApp number missing');
-    saveCustomer();
     const name = $('smCustomerName').value.trim();
     const phone = $('smCustomerPhone').value.trim();
+    const address = $('smCustomerAddress').value.trim();
     const notes = $('smCustomerNotes').value.trim();
+    if (!name || !phone) {
+      toast(L('required'));
+      (!name ? $('smCustomerName') : $('smCustomerPhone')).focus();
+      return;
+    }
+    if (state.orderType === 'delivery' && !address && !state.customerLocation) {
+      toast(L('deliveryRequired'));
+      $('smCustomerAddress').focus();
+      return;
+    }
+    saveCustomer();
     const number = orderNumber();
     const lines = [
       `*${L('order')} - ${restaurantName()}*`,
       `${L('orderNo')}: ${number}`,
-      ''
+      '',
+      `${L('name')}: ${name}`,
+      `${L('phone')}: ${phone}`,
+      `${L('orderType')}: ${state.orderType === 'delivery' ? L('delivery') : L('pickup')}`
     ];
-    if (name) lines.push(`${L('name')}: ${name}`);
-    if (phone) lines.push(`${L('phone')}: ${phone}`);
-    lines.push(`${L('orderType')}: ${state.orderType === 'delivery' ? L('delivery') : L('pickup')}`);
+    if (state.orderType === 'delivery' && address) lines.push(`${L('address')}: ${address}`);
     if (state.orderType === 'delivery' && state.customerLocation) lines.push(`${L('customerLocation')}: ${state.customerLocation}`);
     lines.push('');
     state.cart.forEach((item, i) => {
@@ -924,6 +992,7 @@
       const configResponse = await fetch('data/restaurant.json', { cache: 'no-store' });
       if (!configResponse.ok) throw new Error('Restaurant config not found');
       state.config = await configResponse.json();
+      window.RESTBR_SIMPLE = { version: '3.1', config: state.config };
       state.lang = localStorage.getItem(langKey()) || localStorage.getItem('shorashLang') || state.config.defaultLanguage || state.config.languages?.[0] || 'ar';
       if (!(state.config.languages || ['ar']).includes(state.lang)) state.lang = state.config.defaultLanguage || 'ar';
       applyTheme();
@@ -940,6 +1009,7 @@
         setTimeout(() => showNetworkBanner(L('offline')), 500);
       }
 
+      window.RESTBR_SIMPLE.menu = state.menu;
       applyDeepLinkBeforeRender();
       loadCart();
       installGlobalEvents();
@@ -948,6 +1018,7 @@
       updateScrollSpy();
       scrollToDeepLink();
       registerPwa();
+      window.dispatchEvent(new CustomEvent('restbr-simple:ready', { detail: { version: '3.1' } }));
     } catch (error) {
       console.error('RESTBR Simple failed', error);
       document.body.innerHTML = '<div style="min-height:100vh;display:grid;place-items:center;padding:30px;background:#070503;color:#d8a958;text-align:center;font-family:system-ui">RESTBR<br><small style="color:#aaa;margin-top:8px">Menu could not be loaded</small></div>';
