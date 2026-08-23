@@ -1,0 +1,41 @@
+name: Validate RESTBR Simple
+
+on:
+  push:
+    branches: [shorash]
+  pull_request:
+    branches: [shorash]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check shorash-data.js
+          node --check sw.js
+      - name: Check JSON files
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('data/restaurant.json','utf8'))"
+          node -e "JSON.parse(require('fs').readFileSync('data/menu.json','utf8'))"
+          node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8'))"
+      - name: Check required runtime files
+        run: |
+          test -s index.html
+          test -s styles.css
+          test -s app.js
+          test -s shorash-data.js
+          test -s qr.html
+          test -s sw.js
+          test -s assets/app-icon.svg
+          grep -q 'shorash-data.js?v=2.0' index.html
+          grep -q 'app.js?v=3.0' index.html
+          grep -q 'restbr-simple-shorash-v4' sw.js
