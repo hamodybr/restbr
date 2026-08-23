@@ -1,0 +1,21 @@
+{
+  "name": "Shorash Restaurant Menu",
+  "short_name": "SHORASH",
+  "description": "Shorash Restaurant digital menu",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#080604",
+  "theme_color": "#080604",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "assets/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
