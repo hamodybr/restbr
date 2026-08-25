@@ -1,4 +1,4 @@
-const CACHE_NAME = "shorash-menu-restored-v44";
+const CACHE_NAME = "restbr-tenant-template-v2";
 
 const CORE = [
   "./",
@@ -9,15 +9,16 @@ const CORE = [
   "./css/desktop-phone-parity.css?v=1.0",
   "./css/english-card-ltr.css?v=1.0",
   "./css/mobile-card-image-fix.css?v=1.1",
+  "./js/tenant-public-isolation.js?v=1.0",
   "./js/offline-status.js?v=1.1",
   "./js/unavailable-card-state.js?v=1.1",
-  "./js/app.js?v=17.3",
+  "./js/app.js?v=18.0",
   "./js/product-image-fallback.js?v=1.1",
   "./js/price-safety.js?v=1.0",
   "./js/cart.js?v=4.1",
   "./js/cart-stale-item-guard.js?v=1.1",
   "./js/cart-fab-effects.js?v=1.2",
-  "./js/supabase-config.js?v=1.3",
+  "./js/supabase-config.js?v=3.0",
   "./js/language-settings.js?v=1.1",
   "./js/live-prices.js?v=1.0",
   "./js/discount-choice-price-sync.js?v=1.0",
@@ -27,14 +28,13 @@ const CORE = [
   "./js/admin-theme-toolbar.js?v=1.1",
   "./js/admin-light-theme-complete.js?v=1.0",
   "./js/admin-product-category-filter.js?v=2.0",
-  "./js/admin-takeaway-prices.js?v=1.1",
+  "./js/admin-takeaway-prices.js?v=1.2",
   "./js/admin-option-order.js?v=1.4",
   "./js/admin-restaurant-hours.js?v=1.1",
   "./js/admin-dining-gate-settings.js?v=1.0",
   "./js/admin-discounts.js?v=1.0",
-  "./js/dining-mode.js?v=1.3",
+  "./js/dining-mode.js?v=1.4",
   "./js/dining-gate-language.js?v=1.0",
-  "./data/menu.json?v=32",
   "./assets/favicon.png",
   "./assets/apple-touch-icon.png",
   "./assets/shorash-logo.jpeg"
@@ -73,7 +73,7 @@ self.addEventListener("activate", event => {
     const keys = await caches.keys();
     await Promise.all(
       keys
-        .filter(key => key !== CACHE_NAME)
+        .filter(key => key.startsWith("restbr-tenant-template-") && key !== CACHE_NAME)
         .map(key => caches.delete(key))
     );
     await self.clients.claim();
@@ -94,8 +94,6 @@ self.addEventListener("fetch", event => {
     /\/js\/admin-[^/]+\.js$/i.test(url.pathname) ||
     /\/js\/supabase-config\.js$/i.test(url.pathname);
 
-  // Admin must always prefer the newest online code. This prevents stale
-  // dashboard plugins from being served after a deployment.
   if (isAdminPage || isAdminAsset) {
     event.respondWith((async () => {
       try {
@@ -115,7 +113,7 @@ self.addEventListener("fetch", event => {
   if (request.mode === "navigate") {
     event.respondWith((async () => {
       try {
-        const response = await fetch(request);
+        const response = await fetch(request, { cache: "no-store" });
         if (response && response.ok) {
           const cache = await caches.open(CACHE_NAME);
           cache.put(request, response.clone()).catch(() => {});
