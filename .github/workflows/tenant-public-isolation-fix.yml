@@ -1,0 +1,143 @@
+name: Tenant Public Isolation Fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/tenant-public-isolation-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Patch tenant public cache isolation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          app = Path('tenant-template/js/app.js')
+          text = app.read_text(encoding='utf-8')
+
+          marker = 'let searchTracked = false;\n'
+          insert = '''let searchTracked = false;\n\nconst restbrTenantCacheId=()=>String(\n  window.RESTBR_TENANT_ID ||\n  new URLSearchParams(location.search).get("rid") ||\n  new URLSearchParams(location.search).get("restaurant_id") ||\n  ""\n).trim();\n\nfunction restbrTenantCacheKey(suffix){\n  const rid=restbrTenantCacheId();\n  return rid ? `RESTBR:${rid}:${suffix}` : "";\n}\n'''
+          if marker not in text:
+              raise SystemExit('app marker not found')
+          text = text.replace(marker, insert, 1)
+
+          old = '  const key=`shorash:view:${day}`;\n\n  if(sessionStorage.getItem(key))return;\n\n  sessionStorage.setItem(key,"1");'
+          new = '  const key=restbrTenantCacheKey(`view:${day}`);\n\n  if(!key)return;\n  if(sessionStorage.getItem(key))return;\n\n  sessionStorage.setItem(key,"1");'
+          if old not in text:
+              raise SystemExit('view cache marker not found')
+          text = text.replace(old, new, 1)
+
+          old = '''function saveMenuOfflineCache(db){\n  try{\n    localStorage.setItem(\n      "SHORASH_MENU_OFFLINE_CACHE_V1",\n      JSON.stringify({\n        saved_at:Date.now(),\n        db\n      })\n    );\n  }catch(_){}\n}\n\n\nfunction loadMenuOfflineCache(){\n  try{\n    const raw=localStorage.getItem("SHORASH_MENU_OFFLINE_CACHE_V1");\n    if(!raw)return null;'''
+          new = '''function saveMenuOfflineCache(db){\n  try{\n    const key=restbrTenantCacheKey("MENU_OFFLINE_CACHE_V1");\n    if(!key)return;\n    localStorage.setItem(\n      key,\n      JSON.stringify({\n        saved_at:Date.now(),\n        restaurant_id:restbrTenantCacheId(),\n        db\n      })\n    );\n  }catch(_){}\n}\n\n\nfunction loadMenuOfflineCache(){\n  try{\n    const key=restbrTenantCacheKey("MENU_OFFLINE_CACHE_V1");\n    if(!key)return null;\n    const raw=localStorage.getItem(key);\n    if(!raw)return null;'''
+          if old not in text:
+              raise SystemExit('offline cache marker not found')
+          text = text.replace(old, new, 1)
+
+          old = '''    if(\n      !parsed?.db ||\n      !Array.isArray(parsed.db.products)\n    ) return null;\n\n    return parsed.db;'''
+          new = '''    if(\n      !parsed?.db ||\n      !Array.isArray(parsed.db.products) ||\n      String(parsed.restaurant_id||"") !== restbrTenantCacheId()\n    ) return null;\n\n    return parsed.db;'''
+          if old not in text:
+              raise SystemExit('offline validation marker not found')
+          text = text.replace(old, new, 1)
+
+          old = '''    navigator.serviceWorker\n        .register("./sw.js")\n        .catch(error=>console.debug("SW:",error));'''
+          new = '''    navigator.serviceWorker\n        .register("./sw.js?v=restbr-tenant-v2",{updateViaCache:"none"})\n        .catch(error=>console.debug("SW:",error));'''
+          if old not in text:
+              raise SystemExit('service worker registration marker not found')
+          text = text.replace(old, new, 1)
+
+          old = '''    localStorage.setItem(\n      "SHORASH_BRAND_CACHE_V1",\n      JSON.stringify({'''
+          new = '''    const key=restbrTenantCacheKey("BRAND_CACHE_V1");\n    if(!key)return;\n    localStorage.setItem(\n      key,\n      JSON.stringify({'''
+          if old not in text:
+              raise SystemExit('brand cache marker not found')
+          text = text.replace(old, new, 1)
+
+          old = '''  const alreadySeen=\n    sessionStorage.getItem(\n      "shorashIntroSeen"\n    );'''
+          new = '''  const introKey=restbrTenantCacheKey("introSeen");\n\n  const alreadySeen=\n    introKey ? sessionStorage.getItem(introKey) : null;'''
+          if old not in text:
+              raise SystemExit('intro read marker not found')
+          text = text.replace(old, new, 1)
+
+          old = '''  sessionStorage.setItem(\n    "shorashIntroSeen",\n    "1"\n  );'''
+          new = '''  if(introKey){\n    sessionStorage.setItem(\n      introKey,\n      "1"\n    );\n  }'''
+          if old not in text:
+              raise SystemExit('intro write marker not found')
+          text = text.replace(old, new, 1)
+
+          start = text.index('async function loadMenuFallback() {')
+          end = text.index('\n\n\n/* ========================================\n   START SHORASH', start)
+          replacement = '''async function loadMenuFallback() {\n  // RESTBR tenant safety: never load the copied SHORASH static menu.\n  // Offline fallback is allowed only from the restaurant-scoped cache.\n  throw new Error("RESTBR static cross-tenant fallback disabled");\n}\n'''
+          text = text[:start] + replacement + text[end:]
+
+          old = '''    console.error(\n      "SHORASH MENU ERROR:",\n      error\n    );\n\n\n    const menu ='''
+          new = '''    console.error(\n      "SHORASH MENU ERROR:",\n      error\n    );\n\n    window.__RESTBR_BOOT_ERROR=String(error?.message||error||"Unknown menu error");\n    window.dispatchEvent(new CustomEvent("shorash:error",{detail:{message:window.__RESTBR_BOOT_ERROR}}));\n\n\n    const menu ='''
+          if old not in text:
+              raise SystemExit('app error marker not found')
+          text = text.replace(old, new, 1)
+
+          app.write_text(text, encoding='utf-8')
+
+          index = Path('tenant-template/index.html')
+          text = index.read_text(encoding='utf-8')
+          text = text.replace('const raw=localStorage.getItem("SHORASH_BRAND_CACHE_V1");', 'const rid=String(new URLSearchParams(location.search).get("rid")||new URLSearchParams(location.search).get("restaurant_id")||"").trim();\\n        if(!rid)return;\\n        const raw=localStorage.getItem(`RESTBR:${rid}:BRAND_CACHE_V1`);', 1)
+          text = text.replace('js/supabase-config.js?v=1.3', 'js/supabase-config.js?v=3.0', 1)
+          text = text.replace('js/dining-mode.js?v=1.3', 'js/dining-mode.js?v=1.4', 1)
+          text = text.replace('js/app.js?v=17.3', 'js/app.js?v=18.0', 1)
+          index.write_text(text, encoding='utf-8')
+
+          dining = Path('tenant-template/js/dining-mode.js')
+          text = dining.read_text(encoding='utf-8')
+          marker = '''  window.addEventListener('shorash:ready', () => {\n    subscribePrices();\n    if (selectedMode) void finishSelection();\n  });'''
+          replacement = '''  window.addEventListener('shorash:ready', () => {\n    subscribePrices();\n    if (selectedMode) void finishSelection();\n  });\n\n  window.addEventListener('shorash:error', event => {\n    gate?.classList.remove('loading');\n    const loading = gate?.querySelector('.sm-dining-loading');\n    if (loading) {\n      loading.style.display = 'block';\n      loading.textContent = lang() === 'en'\n        ? 'Menu loading failed. Please refresh.'\n        : lang() === 'ku'\n          ? 'بارکردنی مینیو سەرکەوتوو نەبوو. تکایە نوێی بکەرەوە.'\n          : 'تعذر تحميل المنيو. يرجى تحديث الصفحة.';\n    }\n    console.error('RESTBR public menu boot failed:', event?.detail?.message || 'unknown');\n  });'''
+          if marker not in text:
+              raise SystemExit('dining ready marker not found')
+          text = text.replace(marker, replacement, 1)
+          dining.write_text(text, encoding='utf-8')
+
+          sw = Path('tenant-template/sw.js')
+          text = sw.read_text(encoding='utf-8')
+          text = text.replace('const CACHE_NAME = "shorash-menu-restored-v44";', 'const CACHE_NAME = "restbr-tenant-template-v2";', 1)
+          text = text.replace('"./js/app.js?v=17.3"', '"./js/app.js?v=18.0"', 1)
+          text = text.replace('"./js/supabase-config.js?v=1.3"', '"./js/supabase-config.js?v=3.0"', 1)
+          text = text.replace('"./js/dining-mode.js?v=1.3"', '"./js/dining-mode.js?v=1.4"', 1)
+          text = text.replace('"./js/admin-takeaway-prices.js?v=1.1"', '"./js/admin-takeaway-prices.js?v=1.2"', 1)
+          text = text.replace('  "./data/menu.json?v=32",\n', '', 1)
+          old = '''      keys\n        .filter(key => key !== CACHE_NAME)\n        .map(key => caches.delete(key))'''
+          new = '''      keys\n        .filter(key => key.startsWith("restbr-tenant-template-") && key !== CACHE_NAME)\n        .map(key => caches.delete(key))'''
+          if old not in text:
+              raise SystemExit('sw activation marker not found')
+          text = text.replace(old, new, 1)
+          sw.write_text(text, encoding='utf-8')
+
+          fallback = Path('tenant-template/data/menu.json')
+          fallback.write_text('{"restaurant":{"name":"","nameAr":"","nameKu":"","nameEn":"","display":{}},"products":[]}\n', encoding='utf-8')
+          PY
+
+      - name: Syntax checks
+        run: |
+          node --check tenant-template/js/app.js
+          node --check tenant-template/js/dining-mode.js
+          node --check tenant-template/js/supabase-config.js
+          node --check tenant-template/sw.js
+          grep -q 'RESTBR static cross-tenant fallback disabled' tenant-template/js/app.js
+          grep -q 'restbr-tenant-template-v2' tenant-template/sw.js
+          grep -q 'supabase-config.js?v=3.0' tenant-template/index.html
+          ! grep -q 'SHORASH_MENU_OFFLINE_CACHE_V1' tenant-template/js/app.js
+
+      - name: Commit fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tenant-template/index.html tenant-template/js/app.js tenant-template/js/dining-mode.js tenant-template/sw.js tenant-template/data/menu.json
+          git commit -m 'Isolate public tenant cache and disable cross-tenant fallback'
+          git push origin HEAD:main
