@@ -1,9 +1,10 @@
 (() => {
   if (/(?:^|\/)admin\.html$/i.test(location.pathname)) return;
-  if (window.supabase?.createClient) return;
-  if (window.__RESTBR_SUPABASE_FALLBACK_V1__) return;
-  window.__RESTBR_SUPABASE_FALLBACK_V1__ = true;
+  if (window.__RESTBR_SUPABASE_FALLBACK_V2__) return;
+  window.__RESTBR_SUPABASE_FALLBACK_V2__ = true;
 
+  // Public RESTBR menus deliberately use this small REST client even when the
+  // full Supabase CDN bundle is available. Admin pages keep the full client.
   const FALLBACK_URL = 'https://xdqewaapwhmqlfotaofg.supabase.co';
   const FALLBACK_KEY = 'sb_publishable_dOGkocLtn1WVvrxmu6TnJQ_8qyPyV-T';
 
@@ -364,6 +365,6 @@
   }
 
   window.supabase = { createClient };
-  window.__RESTBR_SUPABASE_TRANSPORT__ = 'rest-fallback';
-  console.warn('RESTBR: Supabase CDN unavailable; using local REST fallback client.');
+  window.__RESTBR_SUPABASE_TRANSPORT__ = 'rest-direct';
+  console.warn('RESTBR: public menu using tenant-scoped local REST client.');
 })();
