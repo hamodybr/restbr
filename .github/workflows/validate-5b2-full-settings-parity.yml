@@ -1,0 +1,87 @@
+name: Validate RESTBR 5B.2 Full Settings Parity
+
+on:
+  push:
+    branches: [tmp-5b2-full-settings-parity]
+  pull_request:
+    branches: [tmp-5b2-full-settings-parity]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: JavaScript syntax
+        run: |
+          set -euo pipefail
+          for file in control-center/manage/*.js; do
+            node --check "$file"
+          done
+
+      - name: Guard full parity load order
+        run: |
+          set -euo pipefail
+          cfg=control-center/manage/config.js
+          grep -q "settings-full-parity-v2.js?v=2.0" "$cfg"
+          ! grep -q "load('restbrSettingsParityV1Script'" "$cfg"
+          parity_line=$(grep -n "settings-full-parity-v2.js?v=2.0" "$cfg" | cut -d: -f1)
+          backup_line=$(grep -n "backup-reset-v2.js" "$cfg" | cut -d: -f1)
+          design_line=$(grep -n "design-controls-v3.js" "$cfg" | cut -d: -f1)
+          test "$parity_line" -gt "$backup_line"
+          test "$parity_line" -gt "$design_line"
+
+      - name: Guard original-style settings structure
+        run: |
+          set -euo pipefail
+          file=control-center/manage/settings-full-parity-v2.js
+          for text in \
+            "الحالة والطلبات" \
+            "الهوية وواجهة المنيو" \
+            "أحجام وتخطيط المنيو" \
+            "التواصل وأزرار أعلى المنيو" \
+            "السوشيال ميديا" \
+            "الفوتر أسفل المنيو" \
+            "الإعلان ومعلومات التوصيل" \
+            "الخلفية والمظهر" \
+            "تعديل الأسعار دفعة واحدة" \
+            "النسخ الاحتياطي والاسترجاع" \
+            "حساب الإدارة"; do
+            grep -q "$text" "$file"
+          done
+          grep -q "fp-tri" "$file"
+          grep -q "fp-toggle" "$file"
+          grep -q "fp-subdetails" "$file"
+
+      - name: Guard stable tenant control reuse
+        run: |
+          set -euo pipefail
+          file=control-center/manage/settings-full-parity-v2.js
+          for id in \
+            saveSettingsBtn rbv2Operations rbBackupBox rbVisibilityOpen rbv2BulkPriceBtn \
+            sNameAr sNameKu sNameEn sPhone sWhatsapp logoFile backgroundFile \
+            rbv2IsOpen rbv2OrdersEnabled rbv2DeliveryEnabled rbv2PickupEnabled \
+            rbv2Instagram rbv2Facebook rbv2TikTok rbv2Snapchat \
+            saveDesignBtn rbActionsOpen; do
+            grep -q "$id" "$file"
+          done
+          ! grep -Eq "cloneNode\(|outerHTML[[:space:]]*=" "$file"
+
+      - name: Guard tenant isolation and fresh feature merge
+        run: |
+          set -euo pipefail
+          file=control-center/manage/settings-full-parity-v2.js
+          grep -q "admin.restbr.com" "$file"
+          grep -q "restaurant_settings" "$file"
+          grep -q "eq('restaurant_id',rid)" "$file"
+          grep -q "select('features')" "$file"
+          grep -q "data-vis-key" "$file"
