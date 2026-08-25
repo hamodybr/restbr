@@ -42,13 +42,21 @@ window.addEventListener('load', () => {
     load('restbrOwnerAuditV2Script','./audit-v2.js?v=2.1');
     load('restbrOwnerQrV2Script','./qr-v2.js?v=2.2');
     load('restbrOwnerMediaPolicyV2Script','./media-policy-v2.js?v=2.0');
+    // settings-organizer-v3.js intentionally disabled: its full-page MutationObserver
+    // caused a DOM feedback loop and browser freezes in Restaurant Manager.
   };
 
+  // Super Admin gate first. Do not let enhancement scripts compete with auth boot.
   load('restbrManagerModeV1Script','./manager-mode-v1.js?v=1.2');
+
+  // Load advanced tools only after the stable core dashboard has actually opened.
   let tries=0;
   const waitForApp=()=>{
     const app=document.getElementById('app');
-    if(app && !app.classList.contains('hidden')){ loadExtensions(); return; }
+    if(app && !app.classList.contains('hidden')){
+      loadExtensions();
+      return;
+    }
     if(++tries < 100) setTimeout(waitForApp,100);
   };
   waitForApp();
