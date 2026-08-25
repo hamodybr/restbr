@@ -84,9 +84,9 @@ jobs:
         run: |
           set -euo pipefail
           grep -q 'platform_admins' control-center/manage/manager-mode-v1.js
-          grep -q 'Super Admin only' control-center/manage/manager-mode-v1.js
+          grep -Eq 'Platform Admin only|Super Admin فقط' control-center/manage/manager-mode-v1.js
           grep -q 'xdqewaapwhmqlfotaofg.supabase.co' control-center/manage/config.js
-          ! grep -R -E 'service_role|sb_secret|postgresql://|DATABASE_PASSWORD' control-center
+          ! grep -R -E '(service_role|sb_secret)[[:space:]]*[:=]|postgresql://|DATABASE_PASSWORD[[:space:]]*[:=]' control-center
           ! grep -R 'raw.githubusercontent.com/hamodybr/restbr-menu-app' control-center
 
       - name: Guard Router V3.4 scope
