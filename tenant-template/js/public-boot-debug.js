@@ -6,8 +6,9 @@
   const previousError = console.error.bind(console);
 
   console.error = (...args) => {
+    let label = '';
     try {
-      const label = String(args[0] || '');
+      label = String(args[0] || '');
       const detail = args[1];
       const message = String(detail?.message || detail || '').trim();
 
@@ -23,5 +24,15 @@
     } catch (_) {}
 
     previousError(...args);
+
+    // tenant-public-isolation runs underneath this wrapper and can replace the
+    // useful first failure with the intentionally blocked static fallback.
+    // Restore the primary Supabase/REST error so the user sees the real cause.
+    if (
+      label.includes('SHORASH MENU ERROR') &&
+      window.__RESTBR_PRIMARY_BOOT_ERROR
+    ) {
+      window.__RESTBR_BOOT_ERROR = window.__RESTBR_PRIMARY_BOOT_ERROR;
+    }
   };
 })();
