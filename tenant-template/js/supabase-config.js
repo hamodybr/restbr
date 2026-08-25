@@ -221,7 +221,7 @@ console.log('✅ RESTBR tenant Supabase connected', RESTBR_TENANT_CONTEXT);
 
   const script = document.createElement('script');
   script.id = 'shorashAdminFontScaleScript';
-  script.src = 'js/admin-font-scale.js?v=1.0';
+  script.src = 'js/admin-font-scale.js?v=1.1';
   script.async = false;
   document.head.appendChild(script);
 })();
