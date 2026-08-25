@@ -1,0 +1,103 @@
+name: Patch Tenant Dining Timeout
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/patch-tenant-dining-timeout.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Patch dining mode timeout
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('tenant-template/js/dining-mode.js')
+          text = path.read_text(encoding='utf-8')
+          old = '''  async function finishSelection() {
+    if (!selectedMode || !window.SHORASH_DB) return;
+    try {
+      await Promise.all([fetchPrices(), fetchDiscounts()]);
+    } catch (error) {
+      console.debug('Dining prices/discounts fallback:', error?.message || error);
+    }
+    applyModeClass();
+    applyModePrices(true);
+    ready = true;
+    gate?.remove();
+    gate = null;
+  }
+'''
+          new = '''  async function finishSelection() {
+    if (!selectedMode || !window.SHORASH_DB) return;
+
+    // Never keep the first dine-in/takeaway gate blocked forever because a
+    // mobile browser stalled one pricing request. Start the refresh in the
+    // background, wait briefly for fresh prices/discounts, then open the menu.
+    const refresh = Promise.all([fetchPrices(), fetchDiscounts()])
+      .then(() => {
+        if (ready) applyModePrices(true);
+        return true;
+      })
+      .catch(error => {
+        console.debug('Dining prices/discounts fallback:', error?.message || error);
+        return false;
+      });
+
+    await Promise.race([
+      refresh,
+      new Promise(resolve => setTimeout(() => resolve(false), 4500))
+    ]);
+
+    applyModeClass();
+    applyModePrices(true);
+    ready = true;
+    gate?.remove();
+    gate = null;
+  }
+'''
+          if old not in text:
+              raise SystemExit('finishSelection block not found')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          index = Path('tenant-template/index.html')
+          text = index.read_text(encoding='utf-8')
+          if 'js/dining-mode.js?v=1.4' not in text:
+              raise SystemExit('index dining v1.4 marker not found')
+          index.write_text(text.replace('js/dining-mode.js?v=1.4', 'js/dining-mode.js?v=1.5', 1), encoding='utf-8')
+
+          sw = Path('tenant-template/sw.js')
+          text = sw.read_text(encoding='utf-8')
+          if '"./js/dining-mode.js?v=1.4"' not in text:
+              raise SystemExit('sw dining v1.4 marker not found')
+          sw.write_text(text.replace('"./js/dining-mode.js?v=1.4"', '"./js/dining-mode.js?v=1.5"', 1), encoding='utf-8')
+          PY
+
+      - name: Syntax check
+        run: |
+          node --check tenant-template/js/dining-mode.js
+          node --check tenant-template/js/tenant-public-isolation.js
+          node --check tenant-template/js/supabase-config.js
+          node --check tenant-template/sw.js
+          grep -q 'setTimeout(() => resolve(false), 4500)' tenant-template/js/dining-mode.js
+          grep -q 'dining-mode.js?v=1.5' tenant-template/index.html
+
+      - name: Commit patch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tenant-template/js/dining-mode.js tenant-template/index.html tenant-template/sw.js
+          git commit -m 'Prevent tenant dining gate from hanging indefinitely'
+          git push origin HEAD:main
