@@ -1,0 +1,103 @@
+name: Validate RESTBR 5B Control Center
+
+on:
+  push:
+    branches: [tmp-5b-control-center]
+  pull_request:
+    branches: [tmp-5b-control-center]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Guard existing RESTBR Simple root
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin stable-restbr-simple-v1:refs/remotes/origin/stable-restbr-simple-v1
+          bad="$(git diff --name-only origin/stable-restbr-simple-v1...HEAD | grep -Ev '^(control-center/|cloudflare/|\.github/workflows/)' || true)"
+          if [ -n "$bad" ]; then
+            echo '5B changed files outside isolated paths:' >&2
+            echo "$bad" >&2
+            exit 1
+          fi
+
+      - name: Required Control Center files
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            control-center/index.html
+            control-center/admin.css
+            control-center/admin.js
+            control-center/admin-v6-policy.js
+            control-center/onboarding-preflight-v1.js
+            control-center/manage/index.html
+            control-center/manage/config.js
+            control-center/manage/manager-mode-v1.js
+            control-center/manage/owner-v2.js
+            control-center/manage/owner-settings-v2.js
+            control-center/manage/bulk-pricing-v2.js
+            control-center/manage/analytics-v2.js
+            control-center/manage/visibility-v2.js
+            control-center/manage/actions-v2.js
+            control-center/manage/design-advanced-v2.js
+            control-center/manage/design-controls-v3.js
+            control-center/manage/backup-reset-v2.js
+            control-center/manage/audit-v2.js
+            control-center/manage/qr-v2.js
+            control-center/manage/media-policy-v2.js
+            cloudflare/restbr-router-v3.4-worker.js
+          )
+          for file in "${required[@]}"; do test -s "$file" || { echo "Missing $file" >&2; exit 1; }; done
+
+      - name: JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do node --check "$file"; done < <(find control-center -type f -name '*.js' -print0)
+          node --check cloudflare/restbr-router-v3.4-worker.js
+
+      - name: Guard staged onboarding only
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -q "rpc('admin_create_restaurant'" control-center/admin.js
+          ! grep -q 'admin_create_restaurant(' control-center/admin.js
+          grep -q 'Intentionally no submit handler here' control-center/admin.js
+          grep -q 'admin_create_restaurant_preview' control-center/onboarding-preflight-v1.js
+          grep -q 'admin_provision_restaurant' control-center/onboarding-preflight-v1.js
+          grep -q 'admin_restaurant_provision_status' control-center/onboarding-preflight-v1.js
+          grep -q 'admin_activate_restaurant' control-center/onboarding-preflight-v1.js
+          grep -q 'onboarding-preflight-v1.js?v=1.2' control-center/admin-v6-policy.js
+
+      - name: Guard manager security and isolation
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'platform_admins' control-center/manage/manager-mode-v1.js
+          grep -q 'Super Admin only' control-center/manage/manager-mode-v1.js
+          grep -q 'xdqewaapwhmqlfotaofg.supabase.co' control-center/manage/config.js
+          ! grep -R -E 'service_role|sb_secret|postgresql://|DATABASE_PASSWORD' control-center
+          ! grep -R 'raw.githubusercontent.com/hamodybr/restbr-menu-app' control-center
+
+      - name: Guard Router V3.4 scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          file=cloudflare/restbr-router-v3.4-worker.js
+          grep -q 'const ADMIN_HOST = "admin.restbr.com"' "$file"
+          grep -q 'const ADMIN_ORIGIN = "https://hamodybr.github.io"' "$file"
+          grep -q 'const ADMIN_BASE_PATH = "/restbr/control-center"' "$file"
+          grep -q 'routerVersion: 3.4' "$file"
+          grep -q 'router_origin' "$file"
+          grep -q 'router_base_path' "$file"
+          ! grep -q 'const ADMIN_BASE_PATH = "/restbr-menu-app/admin"' "$file"
