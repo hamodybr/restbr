@@ -36,6 +36,7 @@ jobs:
           set -euo pipefail
           required=(
             control-center/index.html
+            control-center/platform-config.js
             control-center/admin.css
             control-center/admin.js
             control-center/admin-v6-policy.js
@@ -78,6 +79,20 @@ jobs:
           grep -q 'admin_restaurant_provision_status' control-center/onboarding-preflight-v1.js
           grep -q 'admin_activate_restaurant' control-center/onboarding-preflight-v1.js
           grep -q 'onboarding-preflight-v1.js?v=1.2' control-center/admin-v6-policy.js
+
+      - name: Guard direct Pages config fallback
+        shell: bash
+        run: |
+          set -euo pipefail
+          file=control-center/platform-config.js
+          grep -q "location.hostname !== 'hamodybr.github.io'" "$file"
+          grep -q "url.pathname === '/_restbr/platform-config'" "$file"
+          grep -q 'sb_publishable_' "$file"
+          grep -q './platform-config.js?v=1.0' control-center/index.html
+          config_line="$(grep -n './platform-config.js?v=1.0' control-center/index.html | cut -d: -f1)"
+          admin_line="$(grep -n './admin.js?v=6.0' control-center/index.html | cut -d: -f1)"
+          test "$config_line" -lt "$admin_line"
+          ! grep -E '(service_role|sb_secret)[[:space:]]*[:=]|postgresql://|DATABASE_PASSWORD[[:space:]]*[:=]' "$file"
 
       - name: Guard manager security and isolation
         shell: bash
