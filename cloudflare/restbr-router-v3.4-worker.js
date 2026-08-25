@@ -1,6 +1,6 @@
 // RESTBR Router V3.4
 // Multi-restaurant router + tenant menu API + RESTBR Super Admin host.
-// V3.3: short edge cache for hostname resolution + automatic Owner tenant query.
+// V3.4: isolated Control Center origin for admin.restbr.com.
 // Required Worker bindings:
 //   SUPABASE_URL
 //   SUPABASE_PUBLISHABLE_KEY
@@ -328,7 +328,7 @@ async function handleAdminHost(request, env) {
     return json({ ok: false, error: "admin_endpoint_not_found" }, 404);
   }
 
-  return proxyStaticApp(request, ADMIN_ORIGIN, ADMIN_BASE_PATH, "v3.3-admin");
+  return proxyStaticApp(request, ADMIN_ORIGIN, ADMIN_BASE_PATH, "v3.4-admin");
 }
 
 export default {
