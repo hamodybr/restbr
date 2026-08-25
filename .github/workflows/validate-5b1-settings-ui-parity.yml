@@ -1,0 +1,58 @@
+name: Validate RESTBR 5B.1 Settings UI Parity
+
+on:
+  push:
+    branches: [tmp-5b1-settings-ui-parity]
+  pull_request:
+    branches: [tmp-5b1-settings-ui-parity]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: JavaScript syntax
+        run: |
+          node --check control-center/manage/settings-parity-v1.js
+          node --check control-center/manage/config.js
+
+      - name: Guard parity architecture
+        run: |
+          set -euo pipefail
+          file=control-center/manage/settings-parity-v1.js
+          grep -q "RESTBR Settings UI Parity V1" "$file"
+          grep -q "restbrSettingsParity" "$file"
+          grep -q "settings-accordion" "$file"
+          grep -q "appendChild(node)" "$file"
+          grep -q "does NOT clone IDs" "$file"
+          ! grep -Eq "cloneNode\(|outerHTML[[:space:]]*=" "$file"
+          ! grep -Eq "\.from\(|\.rpc\(|\.update\(|\.insert\(|\.delete\(" "$file"
+
+      - name: Guard load order
+        run: |
+          set -euo pipefail
+          cfg=control-center/manage/config.js
+          grep -q "settings-parity-v1.js?v=1.0" "$cfg"
+          parity_line=$(grep -n "settings-parity-v1.js?v=1.0" "$cfg" | cut -d: -f1)
+          backup_line=$(grep -n "backup-reset-v2.js" "$cfg" | cut -d: -f1)
+          actions_line=$(grep -n "actions-v2.js" "$cfg" | cut -d: -f1)
+          test "$parity_line" -gt "$backup_line"
+          test "$parity_line" -gt "$actions_line"
+
+      - name: Guard stable tenant control IDs
+        run: |
+          set -euo pipefail
+          file=control-center/manage/settings-parity-v1.js
+          for id in saveSettingsBtn sNameAr sPhone rbv2IsOpen rbv2DeliveryAr rbv2Instagram rbBackupBox rbActionsOpen; do
+            grep -q "$id" "$file"
+          done
