@@ -1,4 +1,4 @@
-// RESTBR Full Settings Parity — compatibility bridge V1.0
+// RESTBR Full Settings Parity — compatibility bridge V1.1
 // Loaded immediately before settings-full-parity-v2.js.
 // It preserves the original delegated save/tool buttons when V2 rebuilds the save bar.
 (() => {
@@ -33,10 +33,20 @@
     observer.observe(savebar,{childList:true,subtree:false});
     restoreCore();
 
-    // After V2 finishes, surface optional extension buttons inside the final Tools accordion.
+    // After V2 finishes, make sure the new visible Save button stayed in the top bar,
+    // then surface optional extension buttons inside the final Tools accordion.
     for(let i=0;i<120;i++){
       const root=$('restbrSettingsFullParity');
       if(root){
+        const proxy=$('fpSaveAllBtn');
+        if(proxy&&!savebar.contains(proxy)){
+          const accidentalCard=proxy.closest('.fp-tool');
+          const parking=$('fpCoreSaveParking');
+          if(parking&&parking.parentElement===savebar)savebar.insertBefore(proxy,parking);
+          else savebar.appendChild(proxy);
+          if(accidentalCard&&!accidentalCard.querySelector('button'))accidentalCard.remove();
+        }
+
         const tools=[...root.querySelectorAll('.fp-accordion')].find(d=>d.querySelector('.fp-title strong')?.textContent.trim()==='أدوات إضافية');
         if(tools){
           let grid=tools.querySelector('.fp-tools-grid');
@@ -56,7 +66,7 @@
       await sleep(100);
     }
 
-    console.log('✅ RESTBR Full Settings Parity Bridge V1.0 ready');
+    console.log('✅ RESTBR Full Settings Parity Bridge V1.1 ready');
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>void boot(),{once:true});
