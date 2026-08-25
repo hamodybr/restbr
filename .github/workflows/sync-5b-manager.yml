@@ -1,0 +1,62 @@
+name: Sync 5B Restaurant Manager
+
+on:
+  push:
+    branches: [tmp-5b-control-center]
+    paths:
+      - '.github/workflows/sync-5b-manager.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 5B branch
+        uses: actions/checkout@v4
+        with:
+          ref: tmp-5b-control-center
+          fetch-depth: 0
+
+      - name: Sync tested manager files from 5A branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://raw.githubusercontent.com/hamodybr/restbr-menu-app/tmp-5a-multitenant-recovery/admin/manage'
+          dest='control-center/manage'
+          mkdir -p "$dest"
+          files=(
+            index.html config.js manager-mode-v1.js
+            owner-v2.js owner-settings-v2.js bulk-pricing-v2.js analytics-v2.js
+            visibility-v2.js actions-v2.js design-advanced-v2.js design-controls-v3.js
+            backup-reset-v2.js audit-v2.js qr-v2.js media-policy-v2.js
+          )
+          for file in "${files[@]}"; do
+            curl --fail --silent --show-error --location "$base/$file" --output "$dest/$file"
+            test -s "$dest/$file"
+          done
+
+      - name: Verify manager has no source-repo runtime dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -R "raw.githubusercontent.com/hamodybr/restbr-menu-app" control-center/manage
+          grep -q "RESTBR_OWNER_CONFIG" control-center/manage/config.js
+          grep -q "manager-mode-v1.js" control-center/manage/config.js
+          grep -q "platform_admins" control-center/manage/manager-mode-v1.js
+          grep -q "admin.restbr.com" control-center/manage/manager-mode-v1.js
+
+      - name: Commit synced manager
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'RESTBR 5B Sync'
+          git config user.email 'actions@users.noreply.github.com'
+          git add control-center/manage
+          if git diff --cached --quiet; then
+            echo 'Manager files already synchronized.'
+            exit 0
+          fi
+          git commit -m 'Sync tested restaurant manager into isolated Control Center'
+          git push origin HEAD:tmp-5b-control-center
