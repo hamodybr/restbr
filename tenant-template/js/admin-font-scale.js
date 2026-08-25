@@ -18,7 +18,7 @@
   if (!document.getElementById('restbrAdminRoleUiScript')) {
     const script = document.createElement('script');
     script.id = 'restbrAdminRoleUiScript';
-    script.src = 'js/admin-role-ui.js?v=1.0';
+    script.src = 'js/admin-role-ui.js?v=1.1';
     script.async = false;
     document.head.appendChild(script);
   }
