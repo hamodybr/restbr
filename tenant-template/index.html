@@ -7,13 +7,11 @@
 
   <!-- RESTBR tenant safety must run before any restaurant-specific local/session cache reads. -->
   <script src="js/tenant-public-isolation.js?v=1.1"></script>
+  <script src="js/public-boot-debug.js?v=1.0"></script>
 
   <script>
     window.__smIntroBornAt=Date.now();
 
-    // Ordering starts fail-closed until the restaurant opening-hours policy
-    // has loaded and applied the real state. This removes the first-render
-    // window where an add button could briefly be clickable.
     window.SHORASH_HOURS_READY=false;
     document.documentElement.classList.add("sm-hours-pending");
 
@@ -65,24 +63,12 @@
 
 <body>
 
-  <video
-    id="smBgVideo"
-    class="sm-bg-video"
-    autoplay
-    muted
-    loop
-    playsinline>
-  </video>
-
+  <video id="smBgVideo" class="sm-bg-video" autoplay muted loop playsinline></video>
   <div class="sm-bg-overlay"></div>
 
   <div id="smIntro" class="sm-intro">
     <div class="sm-intro-logo-wrap">
-      <img
-        src=""
-        alt=""
-        class="sm-intro-logo"
-        style="visibility:hidden">
+      <img src="" alt="" class="sm-intro-logo" style="visibility:hidden">
     </div>
     <div class="sm-intro-brand"></div>
     <div class="sm-intro-sub">MENU</div>
@@ -91,11 +77,7 @@
   <main id="smApp" class="sm-app">
     <header class="sm-header">
       <div class="sm-logo-wrap">
-        <img
-          src=""
-          alt=""
-          class="sm-logo"
-          style="visibility:hidden">
+        <img src="" alt="" class="sm-logo" style="visibility:hidden">
       </div>
 
       <h1>MENU</h1>
@@ -137,13 +119,7 @@
     </footer>
   </main>
 
-  <button
-    id="smTopBtn"
-    class="sm-top-btn"
-    type="button"
-    aria-label="Back to top">
-    ↑
-  </button>
+  <button id="smTopBtn" class="sm-top-btn" type="button" aria-label="Back to top">↑</button>
 
   <script>
     (function(){
@@ -164,23 +140,19 @@
         const brand=document.querySelector(".sm-intro-brand");
         if(brand)brand.textContent=name;
 
-        document
-          .querySelectorAll(".sm-intro-logo, .sm-logo")
-          .forEach(logo=>{
-            if(logo && cached.logo){
-              logo.src=cached.logo;
-              logo.style.visibility="visible";
-            }
-          });
+        document.querySelectorAll(".sm-intro-logo, .sm-logo").forEach(logo=>{
+          if(logo && cached.logo){
+            logo.src=cached.logo;
+            logo.style.visibility="visible";
+          }
+        });
       }catch(_){}
     })();
   </script>
 
-  <!-- Offline shell + persistent connection notice. -->
   <script src="js/offline-status.js?v=1.1"></script>
 
-  <!-- Prefer the full Supabase browser client. If the CDN is blocked or fails
-       on a mobile browser, install the local read-capable REST transport. -->
+  <!-- Full Supabase first; local REST transport only installs when the CDN client is missing. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-fallback.js?v=1.0"></script>
   <script src="js/supabase-config.js?v=3.0"></script>
