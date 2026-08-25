@@ -13,7 +13,7 @@
   async function tenant(){
     if(state.tenant)return state.tenant;
     const host=location.hostname.toLowerCase().replace(/^www\./,'');let q;
-    if(host==='hamodybr.github.io'){
+    if((host==='hamodybr.github.io'||host==='admin.restbr.com')){
       const slug=String(new URLSearchParams(location.search).get('tenant')||'').trim().toLowerCase();
       if(!slug)throw new Error('tenant missing');
       q=await sb.from('restaurants').select('id,name,slug,status,default_language,timezone,currency').eq('slug',slug).maybeSingle();

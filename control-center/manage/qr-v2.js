@@ -14,7 +14,7 @@
   async function tenant(){
     if(state.tenantId)return {id:state.tenantId,slug:state.slug};
     const host=location.hostname.toLowerCase().replace(/^www\./,'');
-    if(host==='hamodybr.github.io'){
+    if((host==='hamodybr.github.io'||host==='admin.restbr.com')){
       const slug=String(new URLSearchParams(location.search).get('tenant')||'').trim().toLowerCase();
       if(!slug)throw new Error('tenant missing');
       const {data,error}=await sb.from('restaurants').select('id,slug').eq('slug',slug).maybeSingle();if(error)throw error;if(!data?.id)throw new Error('restaurant not found');state.tenantId=data.id;state.slug=data.slug||slug||'';return data;

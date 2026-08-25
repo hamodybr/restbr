@@ -86,7 +86,7 @@
     if (state.tenantId) return state.tenantId;
 
     const hostname = location.hostname.toLowerCase().replace(/^www\./, '');
-    if (hostname === 'hamodybr.github.io') {
+    if ((hostname === 'hamodybr.github.io' || hostname === 'admin.restbr.com')) {
       const slug = new URLSearchParams(location.search).get('tenant');
       if (!slug) throw new Error('tenant slug missing');
       const { data, error } = await sb.from('restaurants').select('id').eq('slug', slug).maybeSingle();

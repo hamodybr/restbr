@@ -19,7 +19,7 @@
 
   async function tenantId(){
     if(state.tenantId)return state.tenantId;const host=location.hostname.toLowerCase().replace(/^www\./,'');let q;
-    if(host==='hamodybr.github.io'){const slug=String(new URLSearchParams(location.search).get('tenant')||'').trim().toLowerCase();q=await sb.from('restaurants').select('id').eq('slug',slug).maybeSingle();}
+    if((host==='hamodybr.github.io'||host==='admin.restbr.com')){const slug=String(new URLSearchParams(location.search).get('tenant')||'').trim().toLowerCase();q=await sb.from('restaurants').select('id').eq('slug',slug).maybeSingle();}
     else q=await sb.from('restaurant_domains').select('restaurant_id').eq('hostname',host).eq('status','active').eq('is_verified',true).maybeSingle();
     if(q.error)throw q.error;const id=q.data?.id||q.data?.restaurant_id;if(!id)throw new Error('restaurant not found');return state.tenantId=id;
   }
