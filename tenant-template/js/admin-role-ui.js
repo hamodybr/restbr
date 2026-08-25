@@ -12,6 +12,13 @@
   };
 
   const VALID_ROLES = new Set(Object.keys(ROLE_LABELS));
+  const MEMBER_ROLE_MAP = {
+    owner: 'owner',
+    manager: 'manager',
+    editor: 'menu_editor',
+    menu_editor: 'menu_editor',
+    viewer: 'viewer'
+  };
   let currentProfile = null;
   let observer = null;
   let applyTimer = null;
@@ -47,7 +54,7 @@
     const box = document.createElement('section');
     box.id = 'restbrAccessDenied';
     box.className = 'restbr-access-denied';
-    box.innerHTML = `<div class="restbr-access-denied-card"><h2>لا توجد صلاحية للداشبورد</h2><p>هذا الحساب مسجّل دخول لكنه غير مضاف كمستخدم إدارة فعال.</p><button id="restbrDeniedLogout" type="button">تسجيل الخروج</button></div>`;
+    box.innerHTML = `<div class="restbr-access-denied-card"><h2>لا توجد صلاحية للداشبورد</h2><p>هذا الحساب مسجّل دخول لكنه غير مرتبط بهذا المطعم كمستخدم إدارة فعال.</p><button id="restbrDeniedLogout" type="button">تسجيل الخروج</button></div>`;
     document.body.appendChild(box);
     q('#restbrDeniedLogout')?.addEventListener('click', async () => {
       try { await supabaseClient.auth.signOut(); } catch (_) {}
@@ -199,6 +206,54 @@
     observer.observe(document.body, { childList:true, subtree:true });
   }
 
+  function displayNameFor(session){
+    const meta = session?.user?.user_metadata || {};
+    return String(meta.display_name || meta.full_name || meta.name || session?.user?.email || 'مستخدم الإدارة');
+  }
+
+  async function resolveRestbrProfile(session){
+    const uid = session?.user?.id;
+    if (!uid) return null;
+
+    // Platform admins are global super admins and may manage every tenant.
+    const raw = window.__RESTBR_RAW_SUPABASE__ || supabaseClient;
+    const platformResult = await raw
+      .from('platform_admins')
+      .select('is_active')
+      .eq('user_id', uid)
+      .eq('is_active', true)
+      .maybeSingle();
+
+    if (platformResult.error) throw platformResult.error;
+    if (platformResult.data?.is_active === true) {
+      return {
+        display_name: displayNameFor(session),
+        role: 'super_admin',
+        is_active: true,
+        email: session.user.email || ''
+      };
+    }
+
+    // Normal users are scoped to the current restaurant by the tenant client.
+    const memberResult = await supabaseClient
+      .from('restaurant_members')
+      .select('role,is_active')
+      .eq('user_id', uid)
+      .eq('is_active', true)
+      .maybeSingle();
+
+    if (memberResult.error) throw memberResult.error;
+    const mappedRole = MEMBER_ROLE_MAP[String(memberResult.data?.role || '').toLowerCase()] || '';
+    if (!memberResult.data || memberResult.data.is_active !== true || !VALID_ROLES.has(mappedRole)) return null;
+
+    return {
+      display_name: displayNameFor(session),
+      role: mappedRole,
+      is_active: true,
+      email: session.user.email || ''
+    };
+  }
+
   async function loadProfile(session){
     if (!session?.user?.id) {
       currentProfile = null;
@@ -208,15 +263,7 @@
     }
 
     try {
-      const { data, error } = await supabaseClient
-        .from('admin_users')
-        .select('display_name,role,is_active')
-        .eq('user_id', session.user.id)
-        .maybeSingle();
-
-      if (error) throw error;
-
-      const profile = data ? { ...data, email: session.user.email || '' } : null;
+      const profile = await resolveRestbrProfile(session);
       if (!profile || profile.is_active !== true || !VALID_ROLES.has(profile.role)) {
         currentProfile = null;
         setDenied(true);
