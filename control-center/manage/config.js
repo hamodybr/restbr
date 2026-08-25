@@ -43,6 +43,8 @@ window.addEventListener('load', () => {
     load('restbrOwnerQrV2Script','./qr-v2.js?v=2.2');
     load('restbrOwnerMediaPolicyV2Script','./media-policy-v2.js?v=2.0');
     // Full settings parity loads last and reuses the real tenant-safe controls.
+    // Bridge keeps delegated core buttons connected while the save bar is rebuilt.
+    load('restbrSettingsFullParityBridgeV1Script','./settings-full-parity-bridge-v1.js?v=1.0');
     // The former lightweight settings-parity-v1 organizer is intentionally disabled.
     load('restbrSettingsFullParityV2Script','./settings-full-parity-v2.js?v=2.0');
   };
