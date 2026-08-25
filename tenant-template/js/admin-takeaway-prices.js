@@ -89,9 +89,17 @@
         .update({ takeaway_price: item.takeaway })
         .eq('id', target.id);
       if (updateError) throw updateError;
+
+      // Keep the in-memory server snapshot aligned with the explicit update.
+      // Without this, the fallback loop below can still see the old NULL value
+      // and overwrite a newly-entered takeaway price with the inside price.
+      target.takeaway_price = item.takeaway;
     }
 
     for (const row of serverRows) {
+      // Rows explicitly matched to the editor snapshot must never be touched by
+      // the fallback pass; their takeaway value was intentionally supplied.
+      if (used.has(String(row.id))) continue;
       if (row.takeaway_price !== null && row.takeaway_price !== undefined) continue;
       const { error: fallbackError } = await supabaseClient
         .from('product_options')
