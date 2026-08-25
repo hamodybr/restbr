@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#080604">
 
+  <!-- RESTBR tenant safety must run before any restaurant-specific local/session cache reads. -->
+  <script src="js/tenant-public-isolation.js?v=1.0"></script>
+
   <script>
     window.__smIntroBornAt=Date.now();
 
@@ -242,17 +245,17 @@
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=1.3"></script>
+  <script src="js/supabase-config.js?v=3.0"></script>
 
   <!-- Category unavailable state + clear product active/visible/available semantics. -->
   <script src="js/unavailable-card-state.js?v=1.1"></script>
 
   <!-- Dine-in / takeaway gate + active discount price policy -->
-  <script src="js/dining-mode.js?v=1.3"></script>
+  <script src="js/dining-mode.js?v=1.4"></script>
   <script src="js/dining-gate-language.js?v=1.0"></script>
 
   <!-- Menu + Cart + Live Prices -->
-  <script src="js/app.js?v=17.3"></script>
+  <script src="js/app.js?v=18.0"></script>
   <script src="js/product-image-fallback.js?v=1.1"></script>
   <script src="js/price-safety.js?v=1.0"></script>
   <script src="js/cart.js?v=4.1"></script>
