@@ -42,8 +42,9 @@ window.addEventListener('load', () => {
     load('restbrOwnerAuditV2Script','./audit-v2.js?v=2.1');
     load('restbrOwnerQrV2Script','./qr-v2.js?v=2.2');
     load('restbrOwnerMediaPolicyV2Script','./media-policy-v2.js?v=2.0');
-    // settings-organizer-v3.js intentionally disabled: its full-page MutationObserver
-    // caused a DOM feedback loop and browser freezes in Restaurant Manager.
+    // Load the visual organizer last. It only moves existing tenant-safe controls;
+    // it does not duplicate IDs or change save/RLS behavior.
+    load('restbrSettingsParityV1Script','./settings-parity-v1.js?v=1.0');
   };
 
   // Super Admin gate first. Do not let enhancement scripts compete with auth boot.
