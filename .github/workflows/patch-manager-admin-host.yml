@@ -1,0 +1,66 @@
+name: Patch RESTBR Manager Admin Host
+
+on:
+  push:
+    branches: [tmp-5b1-settings-ui-parity]
+    paths:
+      - '.github/workflows/patch-manager-admin-host.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: tmp-5b1-settings-ui-parity
+
+      - name: Patch manager host resolution
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          replacements = [
+              ("hostname === 'hamodybr.github.io'", "(hostname === 'hamodybr.github.io' || hostname === 'admin.restbr.com')"),
+              ("hostname==='hamodybr.github.io'", "(hostname==='hamodybr.github.io'||hostname==='admin.restbr.com')"),
+              ("host === 'hamodybr.github.io'", "(host === 'hamodybr.github.io' || host === 'admin.restbr.com')"),
+              ("host==='hamodybr.github.io'", "(host==='hamodybr.github.io'||host==='admin.restbr.com')"),
+              ('hostname === "hamodybr.github.io"', '(hostname === "hamodybr.github.io" || hostname === "admin.restbr.com")'),
+              ('hostname==="hamodybr.github.io"', '(hostname==="hamodybr.github.io"||hostname==="admin.restbr.com")'),
+              ('host === "hamodybr.github.io"', '(host === "hamodybr.github.io" || host === "admin.restbr.com")'),
+              ('host==="hamodybr.github.io"', '(host==="hamodybr.github.io"||host==="admin.restbr.com")'),
+          ]
+
+          changed = []
+          for path in sorted(Path('control-center/manage').glob('*.js')):
+              text = path.read_text(encoding='utf-8')
+              original = text
+              for old, new in replacements:
+                  text = text.replace(old, new)
+              if text != original:
+                  path.write_text(text, encoding='utf-8')
+                  changed.append(str(path))
+
+          print('patched files:')
+          for item in changed:
+              print(' -', item)
+          if not changed:
+              raise SystemExit('No manager files required the admin host patch.')
+          PY
+
+      - name: JavaScript syntax after patch
+        run: |
+          set -euo pipefail
+          for file in control-center/manage/*.js; do node --check "$file"; done
+
+      - name: Commit compatibility patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add control-center/manage/*.js
+          git commit -m "Treat admin.restbr.com as tenant query host"
+          git push origin HEAD:tmp-5b1-settings-ui-parity
