@@ -53,6 +53,15 @@ jobs:
         run: |
           set -euo pipefail
           file=control-center/manage/settings-parity-v1.js
-          for id in saveSettingsBtn sNameAr sPhone rbv2IsOpen rbv2DeliveryAr rbv2Instagram rbBackupBox rbActionsOpen; do
+          for id in saveSettingsBtn sNameAr sPhone rbv2Operations rbv2DeliveryAr rbv2Instagram rbBackupBox rbActionsOpen; do
             grep -q "$id" "$file"
           done
+
+      - name: Guard admin host tenant resolution
+        run: |
+          set -euo pipefail
+          grep -q "admin.restbr.com" control-center/manage/owner-v2.js
+          grep -q "admin.restbr.com" control-center/manage/owner-settings-v2.js
+          grep -q "admin.restbr.com" control-center/manage/bulk-pricing-v2.js
+          grep -q "admin.restbr.com" control-center/manage/actions-v2.js
+          grep -q "admin.restbr.com" control-center/manage/backup-reset-v2.js
