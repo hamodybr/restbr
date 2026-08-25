@@ -42,9 +42,9 @@ window.addEventListener('load', () => {
     load('restbrOwnerAuditV2Script','./audit-v2.js?v=2.1');
     load('restbrOwnerQrV2Script','./qr-v2.js?v=2.2');
     load('restbrOwnerMediaPolicyV2Script','./media-policy-v2.js?v=2.0');
-    // Load the visual organizer last. It only moves existing tenant-safe controls;
-    // it does not duplicate IDs or change save/RLS behavior.
-    load('restbrSettingsParityV1Script','./settings-parity-v1.js?v=1.0');
+    // Full settings parity loads last and reuses the real tenant-safe controls.
+    // The former lightweight settings-parity-v1 organizer is intentionally disabled.
+    load('restbrSettingsFullParityV2Script','./settings-full-parity-v2.js?v=2.0');
   };
 
   // Super Admin gate first. Do not let enhancement scripts compete with auth boot.
