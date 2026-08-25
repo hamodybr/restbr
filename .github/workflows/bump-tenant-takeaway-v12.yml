@@ -1,0 +1,44 @@
+name: Bump Tenant Takeaway V1.2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/bump-tenant-takeaway-v12.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Bump takeaway patch version
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          cfg = Path('tenant-template/js/supabase-config.js')
+          text = cfg.read_text(encoding='utf-8')
+          old = "script.src = 'js/admin-takeaway-prices.js?v=1.1';"
+          if old not in text:
+              raise SystemExit('takeaway v1.1 marker not found')
+          cfg.write_text(text.replace(old, "script.src = 'js/admin-takeaway-prices.js?v=1.2';", 1), encoding='utf-8')
+          PY
+
+      - name: Syntax check
+        run: |
+          node --check tenant-template/js/supabase-config.js
+          node --check tenant-template/js/admin-takeaway-prices.js
+
+      - name: Commit cache bump
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tenant-template/js/supabase-config.js
+          git commit -m 'Load tenant takeaway price fix v1.2'
+          git push origin HEAD:main
