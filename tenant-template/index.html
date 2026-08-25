@@ -39,7 +39,6 @@
 
   <title>Menu</title>
 
-  <!-- SHORASH Favicon -->
   <link rel="icon" type="image/png" href="assets/favicon.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
@@ -66,7 +65,6 @@
 
 <body>
 
-  <!-- Background video -->
   <video
     id="smBgVideo"
     class="sm-bg-video"
@@ -78,9 +76,7 @@
 
   <div class="sm-bg-overlay"></div>
 
-  <!-- Intro -->
   <div id="smIntro" class="sm-intro">
-
     <div class="sm-intro-logo-wrap">
       <img
         src=""
@@ -88,18 +84,12 @@
         class="sm-intro-logo"
         style="visibility:hidden">
     </div>
-
     <div class="sm-intro-brand"></div>
-
     <div class="sm-intro-sub">MENU</div>
-
   </div>
 
-  <!-- Main page -->
   <main id="smApp" class="sm-app">
-
     <header class="sm-header">
-
       <div class="sm-logo-wrap">
         <img
           src=""
@@ -109,97 +99,44 @@
       </div>
 
       <h1>MENU</h1>
-
       <p id="smSubtitle"></p>
-
       <div id="smLangs" class="sm-langs"></div>
-
       <div id="smActions" class="sm-actions"></div>
-
     </header>
 
-
-    <!-- Sticky category navigation -->
     <div class="sm-cats-wrap">
-
       <div id="smCats" class="sm-cats"></div>
-
-      <div id="smProgress" class="sm-progress">
-        <span></span>
-      </div>
-
+      <div id="smProgress" class="sm-progress"><span></span></div>
     </div>
 
     <div id="smCatsSentinel"></div>
-
-
-    <!-- Menu -->
     <section id="smMenu" class="sm-menu"></section>
 
-
-    <!-- Footer -->
     <footer class="sm-footer">
-
       <div class="sm-footer-card">
-
         <div class="sm-footer-line"></div>
-
         <h2></h2>
-
-        <p class="sm-footer-location">
-          Duhok • Kurdistan
-        </p>
+        <p class="sm-footer-location">Duhok • Kurdistan</p>
 
         <div class="sm-footer-main-actions">
-
-          <a id="smFooterLocation" href="#" target="_blank">
-            موقعنا
-          </a>
-
-          <a id="smFooterCall" href="#">
-            اتصال
-          </a>
-
-          <a id="smFooterWhatsapp" href="#" target="_blank">
-            WhatsApp Menu
-          </a>
-
+          <a id="smFooterLocation" href="#" target="_blank">موقعنا</a>
+          <a id="smFooterCall" href="#">اتصال</a>
+          <a id="smFooterWhatsapp" href="#" target="_blank">WhatsApp Menu</a>
         </div>
-
 
         <div class="sm-footer-socials">
-
-          <a id="smFacebook" href="#" target="_blank">
-            Facebook
-          </a>
-
-          <a id="smSnapchat" href="#" target="_blank">
-            Snapchat
-          </a>
-
-          <a id="smTikTok" href="#" target="_blank">
-            TikTok
-          </a>
-
-          <a id="smInstagram" href="#" target="_blank">
-            Instagram
-          </a>
-
+          <a id="smFacebook" href="#" target="_blank">Facebook</a>
+          <a id="smSnapchat" href="#" target="_blank">Snapchat</a>
+          <a id="smTikTok" href="#" target="_blank">TikTok</a>
+          <a id="smInstagram" href="#" target="_blank">Instagram</a>
         </div>
 
-
         <div class="sm-footer-phone"></div>
-
         <div class="sm-footer-copy"></div>
-
       </div>
-
     </footer>
-
   </main>
 
-
-  <!-- Back to top -->
   <button
     id="smTopBtn"
     class="sm-top-btn"
@@ -207,7 +144,6 @@
     aria-label="Back to top">
     ↑
   </button>
-
 
   <script>
     (function(){
@@ -240,21 +176,20 @@
     })();
   </script>
 
-  <!-- Offline shell + persistent connection notice. Loaded before network libraries. -->
+  <!-- Offline shell + persistent connection notice. -->
   <script src="js/offline-status.js?v=1.1"></script>
 
-  <!-- Supabase -->
+  <!-- Prefer the full Supabase browser client. If the CDN is blocked or fails
+       on a mobile browser, install the local read-capable REST transport. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-fallback.js?v=1.0"></script>
   <script src="js/supabase-config.js?v=3.0"></script>
 
-  <!-- Category unavailable state + clear product active/visible/available semantics. -->
   <script src="js/unavailable-card-state.js?v=1.1"></script>
 
-  <!-- Dine-in / takeaway gate + active discount price policy -->
   <script src="js/dining-mode.js?v=1.4"></script>
   <script src="js/dining-gate-language.js?v=1.0"></script>
 
-  <!-- Menu + Cart + Live Prices -->
   <script src="js/app.js?v=18.0"></script>
   <script src="js/product-image-fallback.js?v=1.1"></script>
   <script src="js/price-safety.js?v=1.0"></script>
@@ -263,19 +198,11 @@
   <script src="js/cart-fab-effects.js?v=1.2"></script>
   <script src="js/live-prices.js?v=1.0"></script>
 
-  <!-- Desktop uses the exact tested phone presentation. Loaded last on purpose. -->
   <link rel="stylesheet" href="css/desktop-phone-parity.css?v=1.0">
-
-  <!-- English-only card direction override. Arabic/Kurdish remain untouched. -->
   <link rel="stylesheet" href="css/english-card-ltr.css?v=1.0">
-
-  <!-- Mobile-only: keep product photos perfectly clipped inside card corners. -->
   <link rel="stylesheet" href="css/mobile-card-image-fix.css?v=1.1">
 
-  <!-- Announcement direction + motion. -->
   <script src="js/english-news-ticker.js?v=1.0"></script>
-
-  <!-- Subtle living-card effects only. -->
   <script src="js/card-life-effects.js?v=1.0"></script>
 
 </body>
