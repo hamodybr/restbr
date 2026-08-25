@@ -1,0 +1,72 @@
+name: Patch RESTBR 5B.2 Savebar Wiring
+
+on:
+  push:
+    branches: [tmp-5b2-full-settings-parity]
+    paths:
+      - '.github/workflows/patch-5b2-savebar.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: tmp-5b2-full-settings-parity
+
+      - name: Keep original save controls connected
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('control-center/manage/settings-full-parity-v2.js')
+          text=p.read_text(encoding='utf-8')
+
+          old="""  function makeSaveProxy(savebar,coreSave,settingsMsg){
+    savebar.className='fp-savebar';savebar.innerHTML='';
+    const copy=document.createElement('div');copy.className='fp-save-copy';copy.innerHTML='<strong>إعدادات المطعم</strong><span>التغييرات لا تثبت إلا بعد الضغط على حفظ.</span>';"""
+          new="""  function makeSaveProxy(savebar,coreSave,settingsMsg){
+    const originalChildren=[...savebar.children];
+    const parking=document.createElement('div');parking.className='fp-hidden-source';
+    originalChildren.forEach(node=>parking.appendChild(node));
+    savebar.className='fp-savebar';
+    const copy=document.createElement('div');copy.className='fp-save-copy';copy.innerHTML='<strong>إعدادات المطعم</strong><span>التغييرات لا تثبت إلا بعد الضغط على حفظ.</span>';"""
+          if old not in text:
+              raise SystemExit('makeSaveProxy start pattern not found')
+          text=text.replace(old,new,1)
+
+          old2="""    savebar.append(copy,btn);
+  }
+
+  function buildStatus(body){"""
+          new2="""    savebar.append(copy,btn,parking);
+  }
+
+  function buildStatus(body){"""
+          if old2 not in text:
+              raise SystemExit('makeSaveProxy append pattern not found')
+          text=text.replace(old2,new2,1)
+
+          old3="const skip=new Set(['saveSettingsBtn','rbVisibilityOpen','rbActionsOpen']);"
+          new3="const skip=new Set(['saveSettingsBtn','fpSaveAllBtn','rbVisibilityOpen','rbActionsOpen']);"
+          if old3 not in text:
+              raise SystemExit('extra tools skip pattern not found')
+          text=text.replace(old3,new3,1)
+
+          p.write_text(text,encoding='utf-8')
+          PY
+
+      - name: Syntax check
+        run: node --check control-center/manage/settings-full-parity-v2.js
+
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add control-center/manage/settings-full-parity-v2.js
+          git commit -m "Keep core settings save controls connected"
+          git push origin HEAD:tmp-5b2-full-settings-parity
